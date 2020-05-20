@@ -1,124 +1,172 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=11 format=2]
 
-[ext_resource path="res://icon.png" type="Texture" id=1]
+[ext_resource path="res://Sprites/Donkey Kong scene.png" type="Texture" id=1]
 [ext_resource path="res://Prefabs/Player.tscn" type="PackedScene" id=2]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 113.068, 20.8547 )
+extents = Vector2( 111.977, 4.15244 )
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 47.9942, 3.96719 )
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 24.0104, 4.02071 )
+
+[sub_resource type="RectangleShape2D" id=4]
+extents = Vector2( 19.966, 3.98022 )
+
+[sub_resource type="RectangleShape2D" id=5]
+extents = Vector2( 16.0459, 4.1412 )
+
+[sub_resource type="RectangleShape2D" id=6]
+extents = Vector2( 11.9437, 4.06775 )
+
+[sub_resource type="RectangleShape2D" id=7]
+extents = Vector2( 55.999, 3.9864 )
+
+[sub_resource type="RectangleShape2D" id=8]
+extents = Vector2( 2.10772, 19.7781 )
 
 [node name="Game" type="Node2D"]
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
 
-[node name="Platform" type="StaticBody2D" parent="."]
-modulate = Color( 0, 1, 0.203922, 1 )
-position = Vector2( 0.496246, 73.16 )
-
-[node name="icon" type="Sprite" parent="Platform"]
-modulate = Color( 0, 1, 0.203922, 1 )
-position = Vector2( 0.451599, 0.451599 )
-scale = Vector2( 1.768, 0.32 )
-texture = ExtResource( 1 )
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform"]
-modulate = Color( 0, 1, 0.203922, 1 )
-shape = SubResource( 1 )
-
-[node name="Platform2" type="StaticBody2D" parent="."]
-modulate = Color( 0, 1, 0.203922, 1 )
-position = Vector2( 299.047, 26.8846 )
-
-[node name="icon" type="Sprite" parent="Platform2"]
-modulate = Color( 0, 1, 0.203922, 1 )
-position = Vector2( 0.451599, 0.451599 )
-scale = Vector2( 1.768, 0.32 )
-texture = ExtResource( 1 )
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform2"]
-modulate = Color( 0, 1, 0.203922, 1 )
-shape = SubResource( 1 )
-
-[node name="Platform3" type="StaticBody2D" parent="."]
-modulate = Color( 0, 1, 0.203922, 1 )
-position = Vector2( 567.743, 70.1744 )
-
-[node name="icon" type="Sprite" parent="Platform3"]
-modulate = Color( 0, 1, 0.203922, 1 )
-position = Vector2( 0.451599, 0.451599 )
-scale = Vector2( 1.768, 0.32 )
-texture = ExtResource( 1 )
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform3"]
-modulate = Color( 0, 1, 0.203922, 1 )
-shape = SubResource( 1 )
-
-[node name="Platform4" type="StaticBody2D" parent="."]
-modulate = Color( 0, 1, 0.203922, 1 )
-position = Vector2( 823.004, 10.4642 )
-
-[node name="icon" type="Sprite" parent="Platform4"]
-modulate = Color( 0, 1, 0.203922, 1 )
-position = Vector2( 0.451599, 0.451599 )
-scale = Vector2( 1.768, 0.32 )
-texture = ExtResource( 1 )
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform4"]
-modulate = Color( 0, 1, 0.203922, 1 )
-shape = SubResource( 1 )
-
-[node name="Platform5" type="StaticBody2D" parent="."]
-modulate = Color( 0, 1, 0.203922, 1 )
-position = Vector2( 1044.43, 10.4642 )
-
-[node name="icon" type="Sprite" parent="Platform5"]
-modulate = Color( 0, 1, 0.203922, 1 )
-position = Vector2( 0.451599, 0.451599 )
-scale = Vector2( 1.768, 0.32 )
-texture = ExtResource( 1 )
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform5"]
-modulate = Color( 0, 1, 0.203922, 1 )
-shape = SubResource( 1 )
-
-[node name="Platform6" type="StaticBody2D" parent="."]
-modulate = Color( 0.545098, 0.290196, 0.392157, 1 )
-position = Vector2( 1004.09, -42.6627 )
+[node name="Donkey Kong scene" type="Sprite" parent="."]
+position = Vector2( -0.130608, -322.079 )
+scale = Vector2( 3, 3 )
 z_index = -1
-
-[node name="icon" type="Sprite" parent="Platform6"]
-position = Vector2( 0.451599, 0.451599 )
-scale = Vector2( 1.768, 0.32 )
 texture = ExtResource( 1 )
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform6"]
-position = Vector2( -0.497559, 0 )
+[node name="StaticBody2D" type="StaticBody2D" parent="Donkey Kong scene"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Donkey Kong scene/StaticBody2D"]
+position = Vector2( -0.0108912, 123.893 )
 shape = SubResource( 1 )
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Donkey Kong scene/StaticBody2D"]
+position = Vector2( 0, 84.01 )
+shape = SubResource( 2 )
 one_way_collision = true
 
-[node name="Platform7" type="StaticBody2D" parent="."]
-modulate = Color( 0, 1, 0.203922, 1 )
-position = Vector2( 1268.34, 10.4642 )
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="Donkey Kong scene/StaticBody2D"]
+position = Vector2( 0, 43.9798 )
+shape = SubResource( 2 )
+one_way_collision = true
 
-[node name="icon" type="Sprite" parent="Platform7"]
-modulate = Color( 0, 1, 0.203922, 1 )
-position = Vector2( 0.451599, 0.451599 )
-scale = Vector2( 1.768, 0.32 )
-texture = ExtResource( 1 )
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="Donkey Kong scene/StaticBody2D"]
+position = Vector2( 0, 3.96661 )
+shape = SubResource( 2 )
+one_way_collision = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform7"]
-modulate = Color( 0, 1, 0.203922, 1 )
-shape = SubResource( 1 )
+[node name="CollisionShape2D5" type="CollisionShape2D" parent="Donkey Kong scene/StaticBody2D"]
+position = Vector2( 0, -36.0406 )
+shape = SubResource( 2 )
+one_way_collision = true
 
-[node name="Platform8" type="StaticBody2D" parent="."]
-modulate = Color( 0, 1, 0.203922, 1 )
-position = Vector2( 1506.19, -53.7242 )
+[node name="CollisionShape2D6" type="CollisionShape2D" parent="Donkey Kong scene/StaticBody2D"]
+position = Vector2( 80.0177, 84.0034 )
+shape = SubResource( 3 )
+one_way_collision = true
 
-[node name="icon" type="Sprite" parent="Platform8"]
-modulate = Color( 0, 1, 0.203922, 1 )
-position = Vector2( 0.451599, 0.451599 )
-scale = Vector2( 1.768, 0.32 )
-texture = ExtResource( 1 )
+[node name="CollisionShape2D8" type="CollisionShape2D" parent="Donkey Kong scene/StaticBody2D"]
+position = Vector2( -75.9963, 43.9862 )
+scale = Vector2( 1, 1 )
+shape = SubResource( 4 )
+one_way_collision = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform8"]
-modulate = Color( 0, 1, 0.203922, 1 )
-shape = SubResource( 1 )
+[node name="CollisionShape2D9" type="CollisionShape2D" parent="Donkey Kong scene/StaticBody2D"]
+position = Vector2( 76.0059, 43.9862 )
+scale = Vector2( 1, 1 )
+shape = SubResource( 4 )
+one_way_collision = true
+
+[node name="CollisionShape2D7" type="CollisionShape2D" parent="Donkey Kong scene/StaticBody2D"]
+position = Vector2( -79.9424, 84.0034 )
+shape = SubResource( 3 )
+one_way_collision = true
+
+[node name="CollisionShape2D10" type="CollisionShape2D" parent="Donkey Kong scene/StaticBody2D"]
+position = Vector2( -71.9984, 4.05883 )
+shape = SubResource( 5 )
+one_way_collision = true
+
+[node name="CollisionShape2D11" type="CollisionShape2D" parent="Donkey Kong scene/StaticBody2D"]
+position = Vector2( 71.9513, 4.05883 )
+shape = SubResource( 5 )
+one_way_collision = true
+
+[node name="CollisionShape2D12" type="CollisionShape2D" parent="Donkey Kong scene/StaticBody2D"]
+position = Vector2( 68.0353, -35.9857 )
+shape = SubResource( 6 )
+one_way_collision = true
+
+[node name="CollisionShape2D13" type="CollisionShape2D" parent="Donkey Kong scene/StaticBody2D"]
+position = Vector2( -67.9855, -35.9857 )
+shape = SubResource( 6 )
+one_way_collision = true
+
+[node name="CollisionShape2D14" type="CollisionShape2D" parent="Donkey Kong scene/StaticBody2D"]
+position = Vector2( 0, -75.9597 )
+shape = SubResource( 7 )
+one_way_collision = true
+
+[node name="ledders" type="Area2D" parent="Donkey Kong scene"]
+position = Vector2( 0, -3.90885 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Donkey Kong scene/ledders"]
+position = Vector2( -4.04474, 103.955 )
+shape = SubResource( 8 )
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Donkey Kong scene/ledders"]
+position = Vector2( -99.998, 103.955 )
+shape = SubResource( 8 )
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="Donkey Kong scene/ledders"]
+position = Vector2( 100.062, 103.955 )
+shape = SubResource( 8 )
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="Donkey Kong scene/ledders"]
+position = Vector2( 91.982, 64.0229 )
+shape = SubResource( 8 )
+
+[node name="CollisionShape2D5" type="CollisionShape2D" parent="Donkey Kong scene/ledders"]
+position = Vector2( 35.9977, 64.0229 )
+shape = SubResource( 8 )
+
+[node name="CollisionShape2D6" type="CollisionShape2D" parent="Donkey Kong scene/ledders"]
+position = Vector2( -36.0234, 64.0229 )
+shape = SubResource( 8 )
+
+[node name="CollisionShape2D7" type="CollisionShape2D" parent="Donkey Kong scene/ledders"]
+position = Vector2( -91.9929, 64.0229 )
+shape = SubResource( 8 )
+
+[node name="CollisionShape2D8" type="CollisionShape2D" parent="Donkey Kong scene/ledders"]
+position = Vector2( -84.012, 24.1389 )
+shape = SubResource( 8 )
+
+[node name="CollisionShape2D9" type="CollisionShape2D" parent="Donkey Kong scene/ledders"]
+position = Vector2( -3.9672, 24.1389 )
+shape = SubResource( 8 )
+
+[node name="CollisionShape2D10" type="CollisionShape2D" parent="Donkey Kong scene/ledders"]
+position = Vector2( 83.9956, 24.1389 )
+shape = SubResource( 8 )
+
+[node name="CollisionShape2D11" type="CollisionShape2D" parent="Donkey Kong scene/ledders"]
+position = Vector2( 76.0106, -16.0324 )
+shape = SubResource( 8 )
+
+[node name="CollisionShape2D12" type="CollisionShape2D" parent="Donkey Kong scene/ledders"]
+position = Vector2( 43.9812, -16.0324 )
+shape = SubResource( 8 )
+
+[node name="CollisionShape2D13" type="CollisionShape2D" parent="Donkey Kong scene/ledders"]
+position = Vector2( -44.062, -16.0324 )
+shape = SubResource( 8 )
+
+[node name="CollisionShape2D14" type="CollisionShape2D" parent="Donkey Kong scene/ledders"]
+position = Vector2( -75.9946, -16.0324 )
+shape = SubResource( 8 )
+[connection signal="body_entered" from="Donkey Kong scene/ledders" to="Player" method="_on_ledders_body_entered"]
+[connection signal="body_exited" from="Donkey Kong scene/ledders" to="Player" method="_on_ledders_body_exited"]
