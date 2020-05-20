@@ -1,8 +1,11 @@
 extends KinematicBody2D
 
-var gravity = 5.0
-export var walkSpeed = 200
-export var jumpForce = 1000
+var slopeStop = 64
+
+var gravity = 1000.0
+export var walkSpeed = 250
+export var jumpVelocity = -400
+
 
 var velocity = Vector2()
 
@@ -10,20 +13,21 @@ func _ready():
 	pass 
 
 func _physics_process(delta):
-	if !is_on_floor():
-		velocity.y += gravity
-	 
-	if is_on_floor() and !Input.is_action_pressed("jump"):
-		velocity.y = 0
+	GetInput()
+	velocity.y += gravity * delta
 	
-	if is_on_floor() and Input.is_action_just_pressed("jump"):
-		velocity.y = jumpForce
+	
+	velocity = move_and_slide(velocity, Vector2(0, -1), slopeStop)
 
-	if Input.is_action_pressed("ui_left"):
-		velocity.x = -walkSpeed
-	elif Input.is_action_pressed("ui_right"):
-		velocity.x =  walkSpeed
-	else:
-		velocity.x = 0
-	
-	move_and_slide(velocity, Vector2(0, -1))
+func GetInput():
+	var moveDirection = -int(Input.is_action_pressed("ui_left")) + int(Input.is_action_pressed("ui_right"))
+	velocity.x = lerp(velocity.x, walkSpeed * moveDirection, GetHWeight())
+	#if moveDirection != 0:
+	#	$Body.scale.x = moveDirection
+
+func GetHWeight():
+	return 0.2 if is_on_floor() else 0.1
+
+func _input(event):
+	if event.is_action_pressed("jump") && is_on_floor():
+		velocity.y = jumpVelocity

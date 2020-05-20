@@ -11,12 +11,114 @@ extents = Vector2( 113.068, 20.8547 )
 [node name="Player" parent="." instance=ExtResource( 2 )]
 
 [node name="Platform" type="StaticBody2D" parent="."]
-position = Vector2( -0.45163, 73.16 )
+modulate = Color( 0, 1, 0.203922, 1 )
+position = Vector2( 0.496246, 73.16 )
 
 [node name="icon" type="Sprite" parent="Platform"]
+modulate = Color( 0, 1, 0.203922, 1 )
 position = Vector2( 0.451599, 0.451599 )
 scale = Vector2( 1.768, 0.32 )
 texture = ExtResource( 1 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Platform"]
+modulate = Color( 0, 1, 0.203922, 1 )
+shape = SubResource( 1 )
+
+[node name="Platform2" type="StaticBody2D" parent="."]
+modulate = Color( 0, 1, 0.203922, 1 )
+position = Vector2( 299.047, 26.8846 )
+
+[node name="icon" type="Sprite" parent="Platform2"]
+modulate = Color( 0, 1, 0.203922, 1 )
+position = Vector2( 0.451599, 0.451599 )
+scale = Vector2( 1.768, 0.32 )
+texture = ExtResource( 1 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform2"]
+modulate = Color( 0, 1, 0.203922, 1 )
+shape = SubResource( 1 )
+
+[node name="Platform3" type="StaticBody2D" parent="."]
+modulate = Color( 0, 1, 0.203922, 1 )
+position = Vector2( 567.743, 70.1744 )
+
+[node name="icon" type="Sprite" parent="Platform3"]
+modulate = Color( 0, 1, 0.203922, 1 )
+position = Vector2( 0.451599, 0.451599 )
+scale = Vector2( 1.768, 0.32 )
+texture = ExtResource( 1 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform3"]
+modulate = Color( 0, 1, 0.203922, 1 )
+shape = SubResource( 1 )
+
+[node name="Platform4" type="StaticBody2D" parent="."]
+modulate = Color( 0, 1, 0.203922, 1 )
+position = Vector2( 823.004, 10.4642 )
+
+[node name="icon" type="Sprite" parent="Platform4"]
+modulate = Color( 0, 1, 0.203922, 1 )
+position = Vector2( 0.451599, 0.451599 )
+scale = Vector2( 1.768, 0.32 )
+texture = ExtResource( 1 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform4"]
+modulate = Color( 0, 1, 0.203922, 1 )
+shape = SubResource( 1 )
+
+[node name="Platform5" type="StaticBody2D" parent="."]
+modulate = Color( 0, 1, 0.203922, 1 )
+position = Vector2( 1044.43, 10.4642 )
+
+[node name="icon" type="Sprite" parent="Platform5"]
+modulate = Color( 0, 1, 0.203922, 1 )
+position = Vector2( 0.451599, 0.451599 )
+scale = Vector2( 1.768, 0.32 )
+texture = ExtResource( 1 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform5"]
+modulate = Color( 0, 1, 0.203922, 1 )
+shape = SubResource( 1 )
+
+[node name="Platform6" type="StaticBody2D" parent="."]
+modulate = Color( 0.545098, 0.290196, 0.392157, 1 )
+position = Vector2( 1004.09, -42.6627 )
+z_index = -1
+
+[node name="icon" type="Sprite" parent="Platform6"]
+position = Vector2( 0.451599, 0.451599 )
+scale = Vector2( 1.768, 0.32 )
+texture = ExtResource( 1 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform6"]
+position = Vector2( -0.497559, 0 )
+shape = SubResource( 1 )
+one_way_collision = true
+
+[node name="Platform7" type="StaticBody2D" parent="."]
+modulate = Color( 0, 1, 0.203922, 1 )
+position = Vector2( 1268.34, 10.4642 )
+
+[node name="icon" type="Sprite" parent="Platform7"]
+modulate = Color( 0, 1, 0.203922, 1 )
+position = Vector2( 0.451599, 0.451599 )
+scale = Vector2( 1.768, 0.32 )
+texture = ExtResource( 1 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform7"]
+modulate = Color( 0, 1, 0.203922, 1 )
+shape = SubResource( 1 )
+
+[node name="Platform8" type="StaticBody2D" parent="."]
+modulate = Color( 0, 1, 0.203922, 1 )
+position = Vector2( 1506.19, -53.7242 )
+
+[node name="icon" type="Sprite" parent="Platform8"]
+modulate = Color( 0, 1, 0.203922, 1 )
+position = Vector2( 0.451599, 0.451599 )
+scale = Vector2( 1.768, 0.32 )
+texture = ExtResource( 1 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform8"]
+modulate = Color( 0, 1, 0.203922, 1 )
 shape = SubResource( 1 )
