@@ -1,0 +1,93 @@
+[gd_scene load_steps=17 format=2]
+
+[ext_resource path="res://Sprites/fireball/firebal-flyingl.png" type="Texture" id=1]
+[ext_resource path="res://Scripts/Fireball.gd" type="Script" id=2]
+[ext_resource path="res://Sprites/Light.png" type="Texture" id=3]
+[ext_resource path="res://Sprites/fireball/fireball_pre-flying.png" type="Texture" id=4]
+
+[sub_resource type="AtlasTexture" id=5]
+atlas = ExtResource( 1 )
+region = Rect2( 0, 0, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=6]
+atlas = ExtResource( 1 )
+region = Rect2( 32, 0, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=7]
+atlas = ExtResource( 1 )
+region = Rect2( 0, 32, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=8]
+atlas = ExtResource( 1 )
+region = Rect2( 32, 32, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=9]
+atlas = ExtResource( 1 )
+region = Rect2( 0, 64, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=10]
+atlas = ExtResource( 4 )
+region = Rect2( 0, 0, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=11]
+atlas = ExtResource( 4 )
+region = Rect2( 32, 0, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=12]
+atlas = ExtResource( 4 )
+region = Rect2( 0, 32, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=13]
+atlas = ExtResource( 4 )
+region = Rect2( 32, 32, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=14]
+atlas = ExtResource( 4 )
+region = Rect2( 0, 64, 32, 32 )
+
+[sub_resource type="SpriteFrames" id=3]
+animations = [ {
+"frames": [ SubResource( 5 ), SubResource( 6 ), SubResource( 7 ), SubResource( 8 ), SubResource( 9 ) ],
+"loop": true,
+"name": "Idle",
+"speed": 15.0
+}, {
+"frames": [ null, null, null, null, null ],
+"loop": true,
+"name": "PreStart",
+"speed": 8.0
+}, {
+"frames": [ SubResource( 10 ), SubResource( 11 ), SubResource( 12 ), SubResource( 13 ), SubResource( 14 ) ],
+"loop": false,
+"name": "Start",
+"speed": 20.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=4]
+extents = Vector2( 11, 6 )
+
+[node name="Fireball" type="KinematicBody2D"]
+collision_layer = 4
+collision_mask = 4
+script = ExtResource( 2 )
+offset = 30
+
+[node name="Texture" type="AnimatedSprite" parent="."]
+frames = SubResource( 3 )
+animation = "Start"
+frame = 4
+offset = Vector2( 0, -10 )
+
+[node name="Collider" type="CollisionShape2D" parent="."]
+visible = false
+position = Vector2( 0, -1 )
+shape = SubResource( 4 )
+disabled = true
+
+[node name="Light2D" type="Light2D" parent="."]
+texture = ExtResource( 3 )
+texture_scale = 2.38
+color = Color( 1, 0.717647, 0.172549, 1 )
+energy = 1.63
+shadow_enabled = true
+[connection signal="animation_finished" from="Texture" to="." method="_on_Texture_animation_finished"]

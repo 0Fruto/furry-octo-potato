@@ -4,7 +4,7 @@
 [ext_resource path="res://Prefabs/Player.tscn" type="PackedScene" id=2]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 111.977, 4.15244 )
+extents = Vector2( 111.977, 4 )
 
 [sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 47.9942, 3.96719 )
@@ -25,14 +25,15 @@ extents = Vector2( 11.9437, 4.06775 )
 extents = Vector2( 55.999, 3.9864 )
 
 [sub_resource type="RectangleShape2D" id=8]
-extents = Vector2( 2.10772, 19.7781 )
+extents = Vector2( 8, 56 )
 
 [node name="Game" type="Node2D"]
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
+position = Vector2( 0, 0 )
 
 [node name="Donkey Kong scene" type="Sprite" parent="."]
-position = Vector2( -0.130608, -322.079 )
+position = Vector2( -3.15544e-30, -332 )
 scale = Vector2( 3, 3 )
 z_index = -1
 texture = ExtResource( 1 )
@@ -40,7 +41,7 @@ texture = ExtResource( 1 )
 [node name="StaticBody2D" type="StaticBody2D" parent="Donkey Kong scene"]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Donkey Kong scene/StaticBody2D"]
-position = Vector2( -0.0108912, 123.893 )
+position = Vector2( 0, 124 )
 shape = SubResource( 1 )
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="Donkey Kong scene/StaticBody2D"]
@@ -70,13 +71,11 @@ one_way_collision = true
 
 [node name="CollisionShape2D8" type="CollisionShape2D" parent="Donkey Kong scene/StaticBody2D"]
 position = Vector2( -75.9963, 43.9862 )
-scale = Vector2( 1, 1 )
 shape = SubResource( 4 )
 one_way_collision = true
 
 [node name="CollisionShape2D9" type="CollisionShape2D" parent="Donkey Kong scene/StaticBody2D"]
 position = Vector2( 76.0059, 43.9862 )
-scale = Vector2( 1, 1 )
 shape = SubResource( 4 )
 one_way_collision = true
 
@@ -111,7 +110,7 @@ shape = SubResource( 7 )
 one_way_collision = true
 
 [node name="ledders" type="Area2D" parent="Donkey Kong scene"]
-position = Vector2( 0, -3.90885 )
+position = Vector2( 1.05181e-30, -5.99998 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Donkey Kong scene/ledders"]
 position = Vector2( -4.04474, 103.955 )
