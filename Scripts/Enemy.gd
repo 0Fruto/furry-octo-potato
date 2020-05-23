@@ -5,6 +5,7 @@ export var light = false
 
 func _ready():
 	$AnimationPlayer.current_animation = "Levitation"
+	
 
 func _process(_delta):
 	if health <= 0:
@@ -12,6 +13,9 @@ func _process(_delta):
 
 func Damage(Damage):
 	health -= Damage
+
+func Freeze():
+	$AnimationPlayer.stop()
 
 func Die():
 	$Enemy.hide()

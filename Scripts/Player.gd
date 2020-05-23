@@ -14,8 +14,8 @@ var isTochingLedder = false
 var climbing = false
 var respawnPos
 var casting = false
-var timer = 0
-var timerGoal = 10
+var hatTimer = 0
+var hatTimerGoal = 10
 var tossingHat = false
 
 
@@ -25,15 +25,16 @@ func _ready():
 	respawnPos = global_position
 
 func _process(delta):
-	if timer < timerGoal:
+	if hatTimer < hatTimerGoal:
 		if velocity.x == 0:
-			timer += delta
+			hatTimer += delta
 		else:
-			timer = 0
-	if timer >= timerGoal && velocity.x == 0:
-		$Sprite.play("Tossing a hat")
-		timer = 0
-		tossingHat = true
+			hatTimer = 0
+	if hatTimer >= hatTimerGoal && velocity.x == 0:
+		if !$"Middle ray".is_colliding():
+			$Sprite.play("Tossing a hat")
+			hatTimer = 0
+			tossingHat = true
 	if jumpTimer < jumpTimerGoal:
 		jumpTimer += delta * 10
 	if isTochingLedder:
@@ -42,8 +43,8 @@ func _process(delta):
 	else:
 		climbing = false
 	ProcessAnimation()
-	$TOS.text = str(round(timer * 10) / 10)
-	$TOS2.text = str("hello!")
+	$TOS.text = str(round(hatTimer*10)/10)
+	
 
 func _physics_process(delta):
 	CheckJump()
@@ -98,16 +99,19 @@ func ProcessAnimation():
 					$Sprite.play("Jump")
 		
 		if Input.is_action_just_pressed("attack") && is_on_floor():
+			hatTimer = 0
 			velocity.x = 0
 			$Sprite.play("Fireball")
 			casting = true
 		if Input.is_action_just_pressed("wall") && is_on_floor():
+			hatTimer = 0
 			$Sprite.play("Set wall")
 			casting = true
 			velocity.x = 0
 
 func GetInput():
 	if Input.is_action_just_pressed("restart"):
+		hatTimer = 0
 		global_position = respawnPos
 	if !casting && !tossingHat:
 		if Input.is_action_just_pressed("ui_down") && is_on_floor():
@@ -117,6 +121,17 @@ func GetInput():
 		velocity.x = lerp(velocity.x, walkSpeed * moveDirection, GetHWeight())
 		if moveDirection != 0:
 			$Sprite.scale.x = moveDirection
+		if moveDirection < 0:
+			if $"Middle ray".cast_to.x > 0:
+				$"Middle ray".cast_to.x = $"Middle ray".cast_to.x * -1
+			if $"Short ray".cast_to.x > 0:
+				$"Short ray".cast_to.x = $"Short ray".cast_to.x * -1
+		if moveDirection > 0:
+			if $"Middle ray".cast_to.x < 0:
+				$"Middle ray".cast_to.x = $"Middle ray".cast_to.x * -1
+			if $"Short ray".cast_to.x < 0:
+				$"Short ray".cast_to.x = $"Short ray".cast_to.x * -1
+			#$"Middle ray".cast_to.x = $"Middle ray".cast_to.x * $Sprite.scale.x
 		if climbing:
 			if Input.is_action_pressed("ui_up"):
 				velocity.y = -100

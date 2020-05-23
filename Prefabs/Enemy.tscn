@@ -23,8 +23,8 @@ extents = Vector2( 13, 14 )
 [node name="Enemy" type="Node2D"]
 
 [node name="Enemy" type="KinematicBody2D" parent="."]
-collision_layer = 4
-collision_mask = 4
+collision_layer = 12
+collision_mask = 12
 script = ExtResource( 2 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Enemy"]
