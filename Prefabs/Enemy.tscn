@@ -18,7 +18,7 @@ tracks/0/keys = {
 }
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 13, 12 )
+extents = Vector2( 13, 14 )
 
 [node name="Enemy" type="Node2D"]
 
@@ -37,5 +37,5 @@ scale = Vector2( 0.608974, 0.608974 )
 texture = ExtResource( 1 )
 
 [node name="Collider" type="CollisionShape2D" parent="Enemy"]
-visible = false
+position = Vector2( 0, 4 )
 shape = SubResource( 2 )

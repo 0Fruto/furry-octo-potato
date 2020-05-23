@@ -1,8 +1,9 @@
 extends KinematicBody2D
 
+export var sideJumpAcceleration = 300
 export var slopeStop = 64
 export var gravity = 1000.0
-export var walkSpeed = 250
+export var walkSpeed = 170
 export var jumpVelocity = -400
 export var jumpTimerGoal = 2
 var jumpTimer = 0
@@ -13,6 +14,9 @@ var isTochingLedder = false
 var climbing = false
 var respawnPos
 var casting = false
+var timer = 0
+var timerGoal = 10
+var tossingHat = false
 
 
 func _ready():
@@ -21,6 +25,15 @@ func _ready():
 	respawnPos = global_position
 
 func _process(delta):
+	if timer < timerGoal:
+		if velocity.x == 0:
+			timer += delta
+		else:
+			timer = 0
+	if timer >= timerGoal && velocity.x == 0:
+		$Sprite.play("Tossing a hat")
+		timer = 0
+		tossingHat = true
 	if jumpTimer < jumpTimerGoal:
 		jumpTimer += delta * 10
 	if isTochingLedder:
@@ -29,8 +42,8 @@ func _process(delta):
 	else:
 		climbing = false
 	ProcessAnimation()
-	$TOS.text = str(jumpTimer)
-	$TOS2.text = str(is_on_floor())
+	$TOS.text = str(round(timer * 10) / 10)
+	$TOS2.text = str("hello!")
 
 func _physics_process(delta):
 	CheckJump()
@@ -48,7 +61,7 @@ func _physics_process(delta):
 
 
 func ProcessAnimation():
-	if !casting:
+	if !casting && !tossingHat:
 		if climbing:
 			if Input.is_action_pressed("ui_up"):
 				$Sprite.play("Climbing")
@@ -79,12 +92,15 @@ func ProcessAnimation():
 					$Sprite.play("Idle")
 			
 			if !is_on_floor():
-				$Sprite.play("Jump")
+				if Input.is_action_pressed("ui_left") || Input.is_action_pressed("ui_right"):
+					$Sprite.play("Side Jump")
+				else:
+					$Sprite.play("Jump")
 		
-		if Input.is_action_just_pressed("attack"):
+		if Input.is_action_just_pressed("attack") && is_on_floor():
+			velocity.x = 0
 			$Sprite.play("Fireball")
 			casting = true
-			velocity.x = 0
 		if Input.is_action_just_pressed("wall") && is_on_floor():
 			$Sprite.play("Set wall")
 			casting = true
@@ -93,7 +109,7 @@ func ProcessAnimation():
 func GetInput():
 	if Input.is_action_just_pressed("restart"):
 		global_position = respawnPos
-	if !casting:
+	if !casting && !tossingHat:
 		if Input.is_action_just_pressed("ui_down") && is_on_floor():
 			position += Vector2(0, 1)
 			#velocity.y = 1000
@@ -114,7 +130,11 @@ func CheckJump():
 	if jumpTimer < jumpTimerGoal:
 		if is_on_floor():
 			velocity.y = jumpVelocity
-			$Sprite.play("Jump")
+			if Input.is_action_pressed("ui_left") || Input.is_action_pressed("ui_right"):
+				$Sprite.play("Side Jump")
+				velocity.x += sideJumpAcceleration * $Sprite.scale.x
+			else:
+				$Sprite.play("Jump")
 
 func GetHWeight():
 	return 0.2 if is_on_floor() else 0.1
@@ -135,3 +155,4 @@ func _on_ledders_body_entered(_body):
 
 func _on_Sprite_animation_finished():
 	casting = false
+	tossingHat = false
