@@ -42,11 +42,12 @@ func _ready():
 		if $"../Player".scale.x < 0:
 			motion = Vector2(cos($"../Player/Long ray".rotation) * -1, sin($"../Player/Long ray".rotation) * -1)
 		motion = motion * Vector2(speed, speed)
-		animCounter = 3
-		$Texture.play("Idle")
-		fly = true
-		$Collider.disabled = false
-		$Light.energy = 0.4
+		if !$"../Player".is_on_floor():
+			animCounter = 3
+			$Texture.play("Idle")
+			fly = true
+			$Collider.disabled = false
+			$Light.energy = 0.4
 	else:
 		$"Texture".scale.x = $"../Player/Sprite".scale.x
 	if $"../Player/Short ray".is_colliding():
