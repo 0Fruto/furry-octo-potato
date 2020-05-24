@@ -1,8 +1,9 @@
 extends KinematicBody2D
 
 var spawnPos
-export var offset = 20
-export var speed = 5
+export var xOffset = 20
+export var yOffset = 7
+export var speed = 10
 var fly = false
 var animCounter = 1
 var remove = false
@@ -16,26 +17,56 @@ var damage = 100
 export var disappearCounterGoal = 2
 var disappearCounter = 0
 var disappear = true
+var slowTimeMod
+
+var angleMotion = false
+var motion
 
 func _ready():
+	slowTimeMod = $"../Player".slowTimeMod
+	$Texture.play("PreStart")
+	lightRemCounter = $Light.energy
+	$Light.energy = 0
+	if $"../Player".aim:
+		# = $"../Player/Sprite".scale.x
+		rotation = $"../Player/Long ray".rotation
+		xOffset = cos($"../Player/Long ray".rotation) * 2
+		motion = Vector2(cos($"../Player/Long ray".rotation), sin($"../Player/Long ray".rotation))
+		if $"../Player/Long ray".cast_to.x < 0:
+			rotation = $"../Player/Long ray".rotation
+			xOffset = -cos($"../Player/Long ray".rotation) * 2
+			motion = Vector2(-cos($"../Player/Long ray".rotation), -sin($"../Player/Long ray".rotation))
+			$"Texture".scale.x = -$"Texture".scale.x
+		angleMotion = true
+		yOffset = sin($"../Player/Long ray".rotation) * 2
+		if $"../Player".scale.x < 0:
+			motion = Vector2(cos($"../Player/Long ray".rotation) * -1, sin($"../Player/Long ray".rotation) * -1)
+		motion = motion * Vector2(speed, speed)
+		animCounter = 3
+		$Texture.play("Idle")
+		fly = true
+		$Collider.disabled = false
+		$Light.energy = 0.4
+	else:
+		$"Texture".scale.x = $"../Player/Sprite".scale.x
 	if $"../Player/Short ray".is_colliding():
 		colPoint = $"../Player/Short ray".get_collision_point()
 		speed = 10
 		speedMode = true
-		offset = 0
-	lightRemCounter = $Light.energy
-	$Light.energy = 0
-	$Texture.play("PreStart")
+		xOffset = 0
 	$Texture.playing = true
-	spawnPos = $"../Player".global_position + Vector2(offset * $"../Player/Sprite".scale.x, 7)
-	$"Texture".scale.x = $"../Player/Sprite".scale.x
+	spawnPos = $"../Player".global_position + Vector2(xOffset * $"../Player/Sprite".scale.x, yOffset)
 	global_position = spawnPos
 	
 
 func _process(delta):
 	if !removeLight:
-		lightAddCounter += delta * 2
-		$Light.energy += delta * 2
+		if !angleMotion:
+			lightAddCounter += delta * 2
+			$Light.energy += delta * 2
+		else:
+			lightAddCounter += delta * 20
+			$Light.energy += delta * 20
 	if disappear:
 		disappearCounter += delta
 		if disappearCounter >= disappearCounterGoal:
@@ -54,7 +85,17 @@ func _process(delta):
 		else:
 			$Light.enabled = false
 	if fly:
-		var body = move_and_collide(Vector2(speed * $"Texture".scale.x, 0))
+		var tempSpeed = speed
+		if $"../Player".aim:
+			tempSpeed = speed * slowTimeMod
+		var body
+		if angleMotion:
+			if !$"../Player".aim:
+				body = move_and_collide(motion)
+			if $"../Player".aim:
+				body = move_and_collide(motion * slowTimeMod)
+		else:
+			body = move_and_collide(Vector2(tempSpeed * $"Texture".scale.x, 0))
 		if body:
 			if body != $"/root/Game/Player":
 				disappear = false

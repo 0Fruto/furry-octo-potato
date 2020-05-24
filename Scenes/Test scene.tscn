@@ -50,7 +50,7 @@ extents = Vector2( 16, 7 )
 script = ExtResource( 8 )
 
 [node name="Player" parent="." instance=ExtResource( 1 )]
-position = Vector2( -293, -42 )
+position = Vector2( -296, -40 )
 collision_layer = 3
 collision_mask = 3
 jumpVelocity = -250
@@ -82,10 +82,10 @@ position = Vector2( 96, 0 )
 shape = SubResource( 1 )
 
 [node name="Light2D" type="Light2D" parent="."]
-position = Vector2( 3, -9 )
+position = Vector2( 0, -8 )
 z_index = -1
 texture = ExtResource( 3 )
-texture_scale = 4.53865
+texture_scale = 4.0
 color = Color( 0.32549, 0.239216, 0.105882, 1 )
 energy = 2.74
 range_layer_min = -1
@@ -100,11 +100,11 @@ playback_speed = 0.6
 anims/Light = SubResource( 2 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="Light2D"]
-position = Vector2( -6, -1 )
 rotation = 1.5708
 z_index = -2
 frames = SubResource( 5 )
 animation = "Idle"
+frame = 1
 playing = true
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]

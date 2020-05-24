@@ -2,6 +2,7 @@ extends Node2D
 
 var loadFireball
 var loadCrystal
+var kickbackForce = 500
 
 func _ready():
 	loadFireball = preload("res://Prefabs/Fireball.tscn")
@@ -12,9 +13,12 @@ func _process(_delta):
 		if $Player.is_on_floor():
 			if Input.is_action_just_pressed("attack"):
 				CastFireball()
-			
 			if Input.is_action_just_pressed("wall"):
 				CastCrystal()
+		if !$Player.is_on_floor() && $Player.aim:
+			if Input.is_action_just_pressed("attack"):
+				$Player.kickback(kickbackForce)
+				CastFireball()
 
 func CastFireball():
 	var fireball = loadFireball.instance()
