@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=2]
+[gd_scene load_steps=31 format=2]
 
 [ext_resource path="res://Sprites/fireball/ice-fireball-inthenemyl-Sheet.png" type="Texture" id=1]
 [ext_resource path="res://Scripts/Fireball.gd" type="Script" id=2]
@@ -132,9 +132,6 @@ animations = [ {
 "speed": 20.0
 } ]
 
-[sub_resource type="RectangleShape2D" id=4]
-extents = Vector2( 12, 6 )
-
 [node name="Fireball" type="KinematicBody2D"]
 collision_layer = 4
 collision_mask = 4
@@ -145,13 +142,9 @@ position = Vector2( 0, -0.659996 )
 z_index = 1
 frames = SubResource( 3 )
 animation = "Idle"
-frame = 3
+frame = 1
 playing = true
 offset = Vector2( 0, -9 )
-
-[node name="Collider" type="CollisionShape2D" parent="."]
-shape = SubResource( 4 )
-disabled = true
 
 [node name="Light" type="Light2D" parent="."]
 position = Vector2( 0, 0.340004 )
@@ -161,4 +154,8 @@ color = Color( 0.172549, 0.65098, 1, 1 )
 energy = 1.63
 range_layer_min = -1
 shadow_enabled = true
+
+[node name="Collider" type="CollisionPolygon2D" parent="."]
+polygon = PoolVector2Array( 8, 0, 7, -3, 5, -5, -5, -5, -11, 0, -5, 5, 5, 5, 7, 3 )
+disabled = true
 [connection signal="animation_finished" from="Texture" to="." method="_on_Texture_animation_finished"]

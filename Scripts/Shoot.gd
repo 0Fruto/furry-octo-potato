@@ -15,7 +15,7 @@ func _process(_delta):
 				CastFireball()
 			if Input.is_action_just_pressed("wall"):
 				CastCrystal()
-		if !$Player.is_on_floor() && $Player.aim:
+		if !$Player.is_on_floor():
 			if Input.is_action_just_pressed("attack"):
 				$Player.kickback(kickbackForce)
 				CastFireball()

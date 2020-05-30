@@ -17,10 +17,8 @@ var crystal = false
 var colPoint
 export var removeCrystalTimerGoal = 10
 var removeCrystalTimer = 0
-var slowTimeMod
 
 func _ready():
-	slowTimeMod = $"../Player".slowTimeMod
 	if $"../Player/Short ray".is_colliding():
 		colPoint = $"../Player/Short ray".get_collision_point()
 		speed = 10
@@ -59,19 +57,13 @@ func _process(delta):
 	if removeTimer >= removeTimerGoal && !crystal:
 		$Animator.z_index = -2
 		$Collider.disabled = true
-		if $"../Player".aim:
-			$Animator.offset.y += 1 * slowTimeMod
-		else:
-			$Animator.offset.y += 1
+		$Animator.offset.y += 1
 	if removeTimer >= removeTimerGoal * 2 && !crystal:
 		remove = true
 		move = false
 		removeLight = true
 	if move:
-		var tempSpeed = speed
-		if $"../Player".aim:
-			tempSpeed = speed * slowTimeMod
-		var body = move_and_collide(Vector2(tempSpeed * $Animator.scale.x, 0))
+		var body = move_and_collide(Vector2(speed * $Animator.scale.x, 0))
 		if body:
 			if body != $"/root/Game/Player":
 				if body.collider.name == "TileMap":
@@ -82,7 +74,7 @@ func _process(delta):
 						$Animator.offset.x = -10
 				if body.collider.name == "Enemy":
 					crystal = true
-					body.collider.Freeze()
+					body.collider.Freeze(removeCrystalTimerGoal)
 					if !speedMode:
 						$Animator.offset.x = 27
 					else:

@@ -2,7 +2,7 @@ extends KinematicBody2D
 
 var spawnPos
 export var xOffset = 20
-export var yOffset = 7
+export var yOffset = 0
 export var speed = 10
 var fly = false
 var animCounter = 1
@@ -17,57 +17,29 @@ var damage = 100
 export var disappearCounterGoal = 2
 var disappearCounter = 0
 var disappear = true
-var slowTimeMod
 
-var angleMotion = false
 var motion
 
 func _ready():
-	slowTimeMod = $"../Player".slowTimeMod
 	$Texture.play("PreStart")
 	lightRemCounter = $Light.energy
 	$Light.energy = 0
-	if $"../Player".aim:
-		# = $"../Player/Sprite".scale.x
-		rotation = $"../Player/Long ray".rotation
-		xOffset = cos($"../Player/Long ray".rotation) * 2
-		motion = Vector2(cos($"../Player/Long ray".rotation), sin($"../Player/Long ray".rotation))
-		if $"../Player/Long ray".cast_to.x < 0:
-			rotation = $"../Player/Long ray".rotation
-			xOffset = -cos($"../Player/Long ray".rotation) * 2
-			motion = Vector2(-cos($"../Player/Long ray".rotation), -sin($"../Player/Long ray".rotation))
-			$"Texture".scale.x = -$"Texture".scale.x
-		angleMotion = true
-		yOffset = sin($"../Player/Long ray".rotation) * 2
-		if $"../Player".scale.x < 0:
-			motion = Vector2(cos($"../Player/Long ray".rotation) * -1, sin($"../Player/Long ray".rotation) * -1)
-		motion = motion * Vector2(speed, speed)
-		if !$"../Player".is_on_floor():
-			animCounter = 3
-			$Texture.play("Idle")
-			fly = true
-			$Collider.disabled = false
-			$Light.energy = 0.4
-	else:
-		$"Texture".scale.x = $"../Player/Sprite".scale.x
+	GetStartRot()
+	
 	if $"../Player/Short ray".is_colliding():
 		colPoint = $"../Player/Short ray".get_collision_point()
 		speed = 10
 		speedMode = true
 		xOffset = 0
 	$Texture.playing = true
-	spawnPos = $"../Player".global_position + Vector2(xOffset * $"../Player/Sprite".scale.x, yOffset)
+	spawnPos = $"../Player".global_position + Vector2(xOffset, yOffset + 5)
 	global_position = spawnPos
 	
 
 func _process(delta):
-	if !removeLight:
-		if !angleMotion:
-			lightAddCounter += delta * 2
-			$Light.energy += delta * 2
-		else:
-			lightAddCounter += delta * 20
-			$Light.energy += delta * 20
+	if !removeLight && lightAddCounter < lightRemCounter:
+		lightAddCounter += delta * 8
+		$Light.energy += delta * 8
 	if disappear:
 		disappearCounter += delta
 		if disappearCounter >= disappearCounterGoal:
@@ -86,17 +58,7 @@ func _process(delta):
 		else:
 			$Light.enabled = false
 	if fly:
-		var tempSpeed = speed
-		if $"../Player".aim:
-			tempSpeed = speed * slowTimeMod
-		var body
-		if angleMotion:
-			if !$"../Player".aim:
-				body = move_and_collide(motion)
-			if $"../Player".aim:
-				body = move_and_collide(motion * slowTimeMod)
-		else:
-			body = move_and_collide(Vector2(tempSpeed * $"Texture".scale.x, 0))
+		var body = move_and_collide(motion)
 		if body:
 			if body != $"/root/Game/Player":
 				disappear = false
@@ -139,3 +101,18 @@ func _on_Texture_animation_finished():
 	
 	if animCounter < 3:
 		animCounter += 1
+
+func GetStartRot():
+	var difference = get_global_mouse_position() - $"../Player".global_position
+	rotation = atan2(difference.y, difference.x)
+	xOffset = cos(rotation) * 25
+	yOffset = sin(rotation) * 25
+	motion = Vector2(cos(rotation), sin(rotation))
+	motion = motion * Vector2(speed, speed)
+	
+	if !$"../Player".is_on_floor():
+		animCounter = 3
+		$Texture.play("Idle")
+		fly = true
+		$Collider.disabled = false
+		$Light.energy = 0.4

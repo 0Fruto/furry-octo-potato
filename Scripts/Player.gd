@@ -13,15 +13,14 @@ var velocity = Vector2()
 
 var isTochingLedder = false
 var climbing = false
-var respawnPos
 var casting = false
 var hatTimer = 0
 var hatTimerGoal = 10
 var tossingHat = false
 var direction = 1
 
-var aim = false
-var aimedOnEnemy = false
+var cursorRot
+
 export var rotatingRayRadNormal = 0.1
 var rotatingRayRad = 0.1
 
@@ -29,30 +28,16 @@ var rotatingRayRad = 0.1
 func _ready():
 	jumpTimer = jumpTimerGoal
 	$"../Light2D/AnimationPlayer".current_animation = "Light"
-	respawnPos = global_position
 
 func _process(delta):
-	Aim()
-	if hatTimer < hatTimerGoal:
-		if velocity.x == 0:
-			hatTimer += delta
-		else:
-			hatTimer = 0
-	if hatTimer >= hatTimerGoal && velocity.x == 0:
-		if !$"Middle ray".is_colliding():
-			$Sprite.play("Tossing a hat")
-			hatTimer = 0
-			tossingHat = true
+	var difference = get_global_mouse_position() - global_position
+	cursorRot = atan2(difference.y, difference.x)
+	HatAnimationProcess(delta)
 	if jumpTimer < jumpTimerGoal:
 		jumpTimer += delta * 10
-	if isTochingLedder:
-		if !is_on_floor() || Input.is_action_pressed("ui_up"):
-			climbing = true
-	else:
-		climbing = false
-	ProcessAnimation()
-	$TOS.text = str(round(hatTimer*10)/10)
 	
+	ProcessAnimation()
+	#$TOS.text = str(round(hatTimer*10)/10)
 
 func _physics_process(delta):
 	CheckJump()
@@ -71,7 +56,11 @@ func _physics_process(delta):
 
 func ProcessAnimation():
 	if !casting && !tossingHat:
-		
+		if isTochingLedder:
+			if !is_on_floor() || Input.is_action_pressed("ui_up"):
+				climbing = true
+	else:
+		climbing = false
 		if climbing:
 			if Input.is_action_pressed("ui_up"):
 				$Sprite.play("Climbing")
@@ -85,22 +74,18 @@ func ProcessAnimation():
 				$Sprite.play("Idle")
 				climbing = false
 		else:
-			if !aim:
+			if is_on_floor():
+				if !Input.is_action_pressed("ui_right") && !Input.is_action_pressed("ui_left"):
+					$Sprite.play("Idle")
+			
+			if Input.is_action_pressed("ui_right") || Input.is_action_pressed("ui_left"):
 				if is_on_floor():
-					if !Input.is_action_pressed("ui_right") && !Input.is_action_pressed("ui_left"):
-						if Input.is_action_pressed("ui_down"):
-							$Sprite.play("Crouch")
-						else:
-							$Sprite.play("Idle")
-				
-				if Input.is_action_pressed("ui_right") || Input.is_action_pressed("ui_left"):
-					if is_on_floor():
-						$Sprite.play("Run")
-				else: if velocity.x == 0:
-					if Input.is_action_pressed("ui_down"):
-						$Sprite.play("Crouch")
-					else:
-						$Sprite.play("Idle")
+					$Sprite.play("Run")
+			else: if velocity.x == 0:
+				if Input.is_action_pressed("ui_down"):
+					$Sprite.play("Crouch")
+				else:
+					$Sprite.play("Idle")
 			
 			if !is_on_floor():
 				if Input.is_action_pressed("ui_left") || Input.is_action_pressed("ui_right"):
@@ -121,9 +106,8 @@ func ProcessAnimation():
 
 func GetInput():
 	if Input.is_action_just_pressed("restart"):
-		hatTimer = 0
-		global_position = respawnPos
-	if !casting && !tossingHat && !aim:
+		get_tree().reload_current_scene()
+	if !casting && !tossingHat:
 		if Input.is_action_just_pressed("ui_down") && is_on_floor():
 			position += Vector2(0, 1)
 			#velocity.y = 1000
@@ -136,12 +120,10 @@ func GetInput():
 			if $"Middle ray".cast_to.x > 0:
 				$"Middle ray".cast_to.x = $"Middle ray".cast_to.x * -1
 				$"Short ray".cast_to.x = $"Short ray".cast_to.x * -1
-				$"Long ray".cast_to.x = $"Long ray".cast_to.x * -1
 		if moveDirection > 0:
 			if $"Middle ray".cast_to.x < 0:
 				$"Middle ray".cast_to.x = $"Middle ray".cast_to.x * -1
 				$"Short ray".cast_to.x = $"Short ray".cast_to.x * -1
-				$"Long ray".cast_to.x = $"Long ray".cast_to.x * -1
 		if climbing:
 			if Input.is_action_pressed("ui_up"):
 				velocity.y = -100
@@ -151,61 +133,8 @@ func GetInput():
 				else:
 					velocity.y = 0
 
-func Aim():
-	rotatingRayRad = rotatingRayRadNormal
-	if Input.is_action_pressed("aim"):
-		aim = true
-		$"Long ray".enabled = true
-		Engine.time_scale = slowTimeMod
-		$MainCamera.zoom = Vector2(0.4, 0.4)
-		if $"Long ray".rotation_degrees < -90 || $"Long ray".rotation_degrees > 90:
-			$Sprite.scale.x = direction * -1
-		else:
-			$Sprite.scale.x = direction
-		if $"Long ray".is_colliding():
-			$Aim.show()
-			$Aim.set_point_position(0, Vector2(0,0))
-			$Aim.set_point_position(1, $"Long ray".get_collision_point() - global_position)
-			if $"Long ray".get_collider().name == "Enemy":
-				aimedOnEnemy = true
-				$Aim.default_color = Color(0, 1, 0, 1)
-				rotatingRayRad = rotatingRayRadNormal / 4
-			else:
-				aimedOnEnemy = false
-				$Aim.default_color = Color(1, 0, 0, 1)
-				rotatingRayRad = rotatingRayRadNormal
-		else:
-			aimedOnEnemy = false
-			$Aim.hide()
-		if Input.is_action_pressed("ui_up"):
-			if $"Long ray".cast_to.x > 0:
-				$"Long ray".rotate(-rotatingRayRad)
-			if $"Long ray".cast_to.x < 0:
-				$"Long ray".rotate(rotatingRayRad)
-		if Input.is_action_pressed("ui_down"):
-			if $"Long ray".cast_to.x > 0:
-				$"Long ray".rotate(rotatingRayRad)
-			if $"Long ray".cast_to.x < 0:
-				$"Long ray".rotate(-rotatingRayRad)
-		if is_on_floor():
-			velocity.x = 0
-			if !casting && !tossingHat:
-				$Sprite.play("Idle")
-	else:
-		aim = false
-		$MainCamera.zoom = Vector2(0.2, 0.2)
-		$"Long ray".enabled = false
-		$"Long ray".rotation = 0
-		$Aim.hide()
-		Engine.time_scale = 1.0
-		direction = $Sprite.scale.x
-		if ($"Long ray".cast_to.x > 0 && direction < 0) || ($"Long ray".cast_to.x < 0 && direction > 0):
-			$"Long ray".cast_to.x = -$"Long ray".cast_to.x
-
 func kickback(force):
-	if $"Long ray".cast_to.x < 0:
-		force = -force
-	velocity = Vector2(cos($"Long ray".rotation) * -force, sin($"Long ray".rotation) * -force)
+	velocity = Vector2(cos(cursorRot) * -force, sin(cursorRot) * -force)
 
 func CheckJump():
 	if jumpTimer < jumpTimerGoal:
@@ -221,7 +150,7 @@ func GetHWeight():
 	return 0.2 if is_on_floor() else 0.1
 
 func _input(event):
-	if !casting && !aim:
+	if !casting:
 		if event.is_action_pressed("jump"):
 			jumpTimer = 0
 
@@ -237,3 +166,15 @@ func _on_ledders_body_entered(_body):
 func _on_Sprite_animation_finished():
 	casting = false
 	tossingHat = false
+
+func HatAnimationProcess(delta):
+	if hatTimer < hatTimerGoal:
+		if velocity.x == 0:
+			hatTimer += delta
+		else:
+			hatTimer = 0
+	if hatTimer >= hatTimerGoal && velocity.x == 0:
+		if !$"Middle ray".is_colliding():
+			$Sprite.play("Tossing a hat")
+			hatTimer = 0
+			tossingHat = true
