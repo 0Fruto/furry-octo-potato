@@ -10,20 +10,21 @@ func _ready():
 
 func _process(_delta):
 	if !$Player.casting && !$Player.tossingHat:
-		if $Player.is_on_floor():
-			if Input.is_action_just_pressed("attack"):
-				CastFireball()
-			if Input.is_action_just_pressed("wall"):
-				CastCrystal()
-		if !$Player.is_on_floor():
-			if Input.is_action_just_pressed("attack"):
-				$Player.kickback(kickbackForce)
-				CastFireball()
+		if Input.is_action_just_pressed("attack"):
+			CastFireball()
+		if Input.is_action_just_pressed("wall"):
+			CastCrystal()
 
 func CastFireball():
-	var fireball = loadFireball.instance()
-	add_child(fireball)
+	if $Player.mana > 10:
+		var fireball = loadFireball.instance()
+		add_child(fireball)
+		$Player.mana -= 10
+		if !$Player.is_on_floor():
+			$Player.kickback(kickbackForce)
 
 func CastCrystal():
-	var crystal = loadCrystal.instance()
-	add_child(crystal)
+	if $Player.mana > 10 && $Player.is_on_floor():
+		var crystal = loadCrystal.instance()
+		add_child(crystal)
+		$Player.mana -= 10

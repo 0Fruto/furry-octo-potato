@@ -15,7 +15,7 @@ func _process(delta):
 		AnimationProcess()
 		#Go(-1)
 		velocity.y += gravity * delta
-		move_and_slide(velocity, Vector2(0, -1))
+		var moveAndSlide = move_and_slide(velocity, Vector2(0, -1))
 	if health <= 0:
 		Die()
 
@@ -40,7 +40,7 @@ func Freeze(time):
 	freeze = false
 
 func Die():
-	yield(get_tree().create_timer(5.0), "timeout")
+	yield(get_tree().create_timer(0.3), "timeout")
 	$Sprite.hide()
 	$Collider.disabled = true
 

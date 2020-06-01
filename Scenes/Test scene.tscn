@@ -53,17 +53,11 @@ script = ExtResource( 8 )
 [node name="Cursor" parent="." instance=ExtResource( 7 )]
 
 [node name="Player" parent="." instance=ExtResource( 1 )]
-position = Vector2( -296, -40 )
+position = Vector2( -314, -70 )
 collision_layer = 3
 collision_mask = 3
 sideJumpAcceleration = 230
-slopeStop = 64
-gravity = 1000.0
-walkSpeed = 170
 jumpVelocity = -250
-jumpTimerGoal = 2
-slowTimeMod = 0.009
-rotatingRayRadNormal = 0.1
 
 [node name="TileMap" type="TileMap" parent="."]
 scale = Vector2( 2, 2 )
@@ -82,14 +76,17 @@ collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ledders"]
 shape = SubResource( 1 )
+disabled = true
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="ledders"]
 position = Vector2( 16, 0 )
 shape = SubResource( 1 )
+disabled = true
 
 [node name="CollisionShape2D3" type="CollisionShape2D" parent="ledders"]
 position = Vector2( 96, 0 )
 shape = SubResource( 1 )
+disabled = true
 
 [node name="Light2D" type="Light2D" parent="."]
 position = Vector2( 0, -8 )
