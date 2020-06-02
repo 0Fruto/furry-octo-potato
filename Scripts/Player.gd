@@ -14,8 +14,6 @@ var jumpTimer = 0
 
 var velocity = Vector2()
 
-var isTochingLedder = false
-var climbing = false
 var casting = false
 var hatTimer = 0
 var hatTimerGoal = 10
@@ -35,8 +33,8 @@ func _ready():
 	$"../Light2D/AnimationPlayer".current_animation = "Light"
 
 func _process(delta):
-	var difference = get_global_mouse_position() - global_position
-	cursorRot = atan2(difference.y, difference.x)
+	var rotDifference = get_global_mouse_position() - global_position
+	cursorRot = atan2(rotDifference.y, rotDifference.x)
 	HatAnimationProcess(delta)
 	if jumpTimer < jumpTimerGoal:
 		jumpTimer += delta * 10
@@ -44,27 +42,15 @@ func _process(delta):
 	ProcessAnimation()
 	#$TOS.text = str(round(hatTimer*10)/10)
 	if mana < 100: mana += delta
+	ManaProcess(delta)
 	$"MainCamera/Mana".value = manaDisplay
 	$"MainCamera/Health".value = health
 
 func _physics_process(delta):
 	CheckJump()
 	GetInput()
-	if !climbing:
-		velocity.y += gravity * delta
+	velocity.y += gravity * delta
 	velocity = move_and_slide(velocity, Vector2(0, -1), slopeStop)
-	
-	if manaDisplay < mana + delta * 20:manaDisplay += delta * 20
-	elif manaDisplay < mana + delta * 10:manaDisplay += delta * 10
-	elif manaDisplay < mana + delta * 5:manaDisplay += delta * 5
-	elif manaDisplay < mana + delta * 2:manaDisplay += delta * 2
-	elif manaDisplay < mana + delta / 2:manaDisplay += delta / 2
-	
-	if manaDisplay > mana - delta * 20:manaDisplay -= delta * 20
-	elif manaDisplay > mana - delta * 10:manaDisplay -= delta * 10
-	elif manaDisplay > mana - delta * 5:manaDisplay -= delta * 5
-	elif manaDisplay > mana - delta * 2:manaDisplay -= delta * 2
-	elif manaDisplay > mana - delta / 2:manaDisplay -= delta / 2
 
 
 
@@ -75,27 +61,6 @@ func _physics_process(delta):
 
 
 func ProcessAnimation():
-	#if !casting:
-	#	if isTochingLedder:
-	#		if !is_on_floor() || Input.is_action_pressed("ui_up"):
-	#			climbing = true
-	#else:
-	#	climbing = false
-	if climbing:
-		if Input.is_action_pressed("ui_up"):
-			$Sprite.play("Climbing")
-		if Input.is_action_pressed("ui_down"):
-			$Sprite.play("Climbing")
-		if !is_on_floor():
-			if !Input.is_action_pressed("ui_up") && !Input.is_action_pressed("ui_down"):
-				$Sprite.play("Climbing")
-				$Sprite.stop()
-		elif Input.is_action_pressed("ui_down"):
-			$Sprite.play("Idle")
-			climbing = false
-	else:
-		
-		
 		if Input.is_action_pressed("ui_right") || Input.is_action_pressed("ui_left"):
 			if is_on_floor():
 				$Sprite.play("Run")
@@ -138,8 +103,8 @@ func GetInput():
 	if Input.is_action_just_pressed("restart"):
 		var reloadScene = get_tree().reload_current_scene()
 	if !casting:
-		if Input.is_action_just_pressed("ui_down") && is_on_floor():
-			position += Vector2(0, 1)
+		#if Input.is_action_just_pressed("ui_down") && is_on_floor():
+			#position += Vector2(0, 1)
 			#velocity.y = 1000
 		var moveDirection = -int(Input.is_action_pressed("ui_left")) + int(Input.is_action_pressed("ui_right"))
 		velocity.x = lerp(velocity.x, walkSpeed * moveDirection, GetHWeight())
@@ -154,14 +119,6 @@ func GetInput():
 			if $"Middle ray".cast_to.x < 0:
 				$"Middle ray".cast_to.x = $"Middle ray".cast_to.x * -1
 				$"Short ray".cast_to.x = $"Short ray".cast_to.x * -1
-		if climbing:
-			if Input.is_action_pressed("ui_up"):
-				velocity.y = -100
-			else:
-				if Input.is_action_pressed("ui_down"):
-					velocity.y = 100
-				else:
-					velocity.y = 0
 
 func kickback(force):
 	velocity = Vector2(cos(cursorRot) * -force, sin(cursorRot) * -force)
@@ -186,14 +143,18 @@ func _input(event):
 		if event.is_action_pressed("jump"):
 			jumpTimer = 0
 
-func _on_ledders_body_exited(_body):
-	isTochingLedder = false
-	climbing = false
-
-func _on_ledders_body_entered(_body):
-	isTochingLedder = true
-	velocity.y = 0
-
+func ManaProcess(delta):
+	if manaDisplay < mana + delta * 20:manaDisplay += delta * 20
+	elif manaDisplay < mana + delta * 10:manaDisplay += delta * 10
+	elif manaDisplay < mana + delta * 5:manaDisplay += delta * 5
+	elif manaDisplay < mana + delta * 2:manaDisplay += delta * 2
+	elif manaDisplay < mana + delta / 2:manaDisplay += delta / 2
+	
+	if manaDisplay > mana - delta * 20:manaDisplay -= delta * 20
+	elif manaDisplay > mana - delta * 10:manaDisplay -= delta * 10
+	elif manaDisplay > mana - delta * 5:manaDisplay -= delta * 5
+	elif manaDisplay > mana - delta * 2:manaDisplay -= delta * 2
+	elif manaDisplay > mana - delta / 2:manaDisplay -= delta / 2
 
 func _on_Sprite_animation_finished():
 	casting = false

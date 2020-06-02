@@ -223,7 +223,7 @@ animations = [ {
 "frames": [ SubResource( 53 ), SubResource( 54 ), SubResource( 55 ), SubResource( 56 ), SubResource( 57 ), SubResource( 58 ), SubResource( 59 ), SubResource( 60 ) ],
 "loop": true,
 "name": "Idle",
-"speed": 10.0
+"speed": 7.0
 }, {
 "frames": [  ],
 "loop": true,
@@ -237,7 +237,7 @@ animations = [ {
 } ]
 
 [sub_resource type="RectangleShape2D" id=48]
-extents = Vector2( 9, 15 )
+extents = Vector2( 9, 17 )
 
 [node name="Player" type="KinematicBody2D"]
 position = Vector2( 0, 0.322159 )
@@ -305,7 +305,7 @@ collision_mask = 9
 [node name="Sprite" type="AnimatedSprite" parent="."]
 position = Vector2( 0, -0.322159 )
 frames = SubResource( 47 )
-animation = "PreIdle"
+animation = "Idle"
 frame = 3
 playing = true
 
@@ -318,7 +318,7 @@ frame = 1
 playing = true
 
 [node name="Collider" type="CollisionShape2D" parent="."]
-position = Vector2( 4, 16.6778 )
+position = Vector2( 4, 14.6778 )
 shape = SubResource( 48 )
 
 [node name="TOS" type="Label" parent="."]
