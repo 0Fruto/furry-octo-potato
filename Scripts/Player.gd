@@ -22,6 +22,8 @@ var direction = 1
 var firstAnimL = true
 var landing = false
 
+onready var pauseManager = $MainCamera/Pause
+
 var cursorRot
 
 export var rotatingRayRadNormal = 0.1
@@ -100,8 +102,10 @@ func ProcessAnimation():
 			velocity.x = 0
 
 func GetInput():
+	if Input.is_action_just_pressed("ui_cancel"):
+		pauseManager.Pause()
 	if Input.is_action_just_pressed("restart"):
-		var reloadScene = get_tree().reload_current_scene()
+		pauseManager.Restart()
 	if !casting:
 		#if Input.is_action_just_pressed("ui_down") && is_on_floor():
 			#position += Vector2(0, 1)
@@ -110,15 +114,6 @@ func GetInput():
 		velocity.x = lerp(velocity.x, walkSpeed * moveDirection, GetHWeight())
 		if moveDirection != 0:
 			$Sprite.scale.x = moveDirection
-			direction = moveDirection
-		if moveDirection < 0:
-			if $"Middle ray".cast_to.x > 0:
-				$"Middle ray".cast_to.x = $"Middle ray".cast_to.x * -1
-				$"Short ray".cast_to.x = $"Short ray".cast_to.x * -1
-		if moveDirection > 0:
-			if $"Middle ray".cast_to.x < 0:
-				$"Middle ray".cast_to.x = $"Middle ray".cast_to.x * -1
-				$"Short ray".cast_to.x = $"Short ray".cast_to.x * -1
 
 func kickback(force):
 	velocity = Vector2(cos(cursorRot) * -force, sin(cursorRot) * -force)

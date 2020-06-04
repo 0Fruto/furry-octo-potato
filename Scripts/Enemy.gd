@@ -15,7 +15,7 @@ func _process(delta):
 		AnimationProcess()
 		#Go(-1)
 		velocity.y += gravity * delta
-		var moveAndSlide = move_and_slide(velocity, Vector2(0, -1))
+		move_and_slide(velocity, Vector2(0, -1))
 	if health <= 0:
 		Die()
 
