@@ -21,6 +21,10 @@ var tossingHat = false
 var direction = 1
 var firstAnimL = true
 var landing = false
+var sideJump = false
+
+var fly = false
+var flyTimer = 100
 
 onready var pauseManager = $MainCamera/Pause
 
@@ -35,6 +39,7 @@ func _ready():
 	$"../Light2D/AnimationPlayer".current_animation = "Light"
 
 func _process(delta):
+	FlyProcess()
 	var rotDifference = get_global_mouse_position() - global_position
 	cursorRot = atan2(rotDifference.y, rotDifference.x)
 	HatAnimationProcess(delta)
@@ -42,7 +47,8 @@ func _process(delta):
 		jumpTimer += delta * 10
 	
 	ProcessAnimation()
-	#$TOS.text = str(round(hatTimer*10)/10)
+	$TOS.text = str(fly)
+	#$TOS2.text = str()
 	if mana < 100: mana += delta
 	ManaProcess(delta)
 	$"MainCamera/Mana".value = manaDisplay
@@ -51,7 +57,8 @@ func _process(delta):
 func _physics_process(delta):
 	CheckJump()
 	GetInput()
-	velocity.y += gravity * delta
+	if !fly:
+		velocity.y += gravity * delta
 	velocity = move_and_slide(velocity, Vector2(0, -1), slopeStop)
 
 
@@ -63,29 +70,31 @@ func _physics_process(delta):
 
 
 func ProcessAnimation():
+	if !fly:
 		if Input.is_action_pressed("ui_right") || Input.is_action_pressed("ui_left"):
-			if is_on_floor():
+			if is_on_floor() and !firstAnimL and !landing:
 				$Sprite.play("Run")
 		
 		if is_on_floor():
+			sideJump = false
 			if firstAnimL:
 				if !landing:
 					firstAnimL = false
-					$Sprite.play("Landing")
 					landing = true
-			elif !landing and !Input.is_action_pressed("ui_right") && !Input.is_action_pressed("ui_left") and velocity.x == 0:
+					$Sprite.play("Landing")
+			elif !landing and !Input.is_action_pressed("ui_right") && !Input.is_action_pressed("ui_left"):
 				$Sprite.play("Idle")
-			elif !landing and !Input.is_action_pressed("ui_right") && !Input.is_action_pressed("ui_left") and velocity.x != 0:
-				$Sprite.play("PreIdle")
 		
 		elif !is_on_floor():
-			#if Input.is_action_pressed("ui_left") || Input.is_action_pressed("ui_right"):
+			if Input.is_action_pressed("ui_left") || Input.is_action_pressed("ui_right"):
 				#$Sprite.play("Side Jump")
-			#else:
-			#if !jumpStart:
+				pass
+			else:
 				if velocity.y >= 0:
 					$Sprite.play("Falling")
 					firstAnimL = true 
+					if velocity.y >= 500:
+						Damage(velocity.y / 1000)
 				elif velocity.y < 0:
 					$Sprite.play("JumpUp")
 					firstAnimL = true
@@ -107,34 +116,42 @@ func GetInput():
 	if Input.is_action_just_pressed("restart"):
 		pauseManager.Restart()
 	if !casting:
+		if Input.is_action_just_pressed("e"):
+			fly = !fly
 		#if Input.is_action_just_pressed("ui_down") && is_on_floor():
 			#position += Vector2(0, 1)
 			#velocity.y = 1000
 		var moveDirection = -int(Input.is_action_pressed("ui_left")) + int(Input.is_action_pressed("ui_right"))
-		velocity.x = lerp(velocity.x, walkSpeed * moveDirection, GetHWeight())
+		if !fly:
+			velocity.x = lerp(velocity.x, walkSpeed * moveDirection, GetHWeight())
+		else:
+			velocity.x = lerp(velocity.x, walkSpeed * moveDirection * 3, GetHWeight())
+			velocity.y = lerp(velocity.y, walkSpeed * (-int(Input.is_action_pressed("ui_up")) + int(Input.is_action_pressed("ui_down"))) * 3, GetHWeight())
 		if moveDirection != 0:
 			$Sprite.scale.x = moveDirection
 
 func kickback(force):
-	velocity = Vector2(cos(cursorRot) * -force, sin(cursorRot) * -force)
+	if !fly:
+		velocity = Vector2(cos(cursorRot) * -force, sin(cursorRot) * -force)
 
 func CheckJump():
 	if jumpTimer < jumpTimerGoal:
 		if is_on_floor():
 			velocity.y = jumpVelocity
 			if Input.is_action_pressed("ui_left") || Input.is_action_pressed("ui_right"):
-				#$Sprite.play("Side Jump")
+				$Sprite.play("Side Jump")
 				velocity.x += sideJumpAcceleration * $Sprite.scale.x
+				sideJump = false
 				#jumpStart = true
-			#else:
-				#$Sprite.play("Jump")
+			else:
+				$Sprite.play("Jump")
 				#jumpStart = true
 
 func GetHWeight():
 	return 0.2 if is_on_floor() else 0.1
 
 func _input(event):
-	if !casting:
+	if !casting and !fly:
 		if event.is_action_pressed("jump"):
 			jumpTimer = 0
 
@@ -168,3 +185,24 @@ func HatAnimationProcess(delta):
 			$Sprite.play("Tossing a hat")
 			hatTimer = 0
 			tossingHat = true
+
+func FlyProcess():
+	var rock = $Rock
+	if fly:
+		if flyTimer > 0:
+			rock.show()
+			if rock.offset.y > 0:
+				rock.offset.y -= 100
+			if rock.offset.y < 30:
+				rock.offset.y = 0
+			$Sprite.play("Idle")
+			flyTimer -= 1
+		else:
+			fly = false
+	else:
+		rock.hide()
+		rock.offset.y = 300
+		flyTimer = 100
+
+func Damage(damage):
+	health -= damage
