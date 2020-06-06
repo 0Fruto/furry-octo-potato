@@ -4,7 +4,7 @@ export var health = 100
 export var mana = 100
 var manaDisplay = 100
 
-export var sideJumpAcceleration = 300
+export var sideJumpAcceleration = 500
 export var slopeStop = 64
 export var gravity = 1000.0
 export var walkSpeed = 170
@@ -22,6 +22,7 @@ var direction = 1
 var firstAnimL = true
 var landing = false
 var sideJump = false
+var aiming = true
 
 var fly = false
 var flyTimer = 100
@@ -86,10 +87,7 @@ func ProcessAnimation():
 				$Sprite.play("Idle")
 		
 		elif !is_on_floor():
-			if Input.is_action_pressed("ui_left") || Input.is_action_pressed("ui_right"):
-				#$Sprite.play("Side Jump")
-				pass
-			else:
+			if !Input.is_action_pressed("ui_left") and !Input.is_action_pressed("ui_right"):
 				if velocity.y >= 0:
 					$Sprite.play("Falling")
 					firstAnimL = true 
@@ -99,7 +97,7 @@ func ProcessAnimation():
 					$Sprite.play("JumpUp")
 					firstAnimL = true
 		
-		if Input.is_action_just_pressed("attack") && is_on_floor() && mana > 10:
+		if Input.is_action_just_pressed("attack") && is_on_floor() && mana > 10 && !aiming:
 			hatTimer = 0
 			velocity.x = 0
 			#$Sprite.play("Fireball")
@@ -111,13 +109,21 @@ func ProcessAnimation():
 			velocity.x = 0
 
 func GetInput():
+	if Input.is_action_pressed("aim"):
+		aiming = true
+	else:
+		aiming = false
 	if Input.is_action_just_pressed("ui_cancel"):
 		pauseManager.Pause()
 	if Input.is_action_just_pressed("restart"):
 		pauseManager.Restart()
 	if !casting:
 		if Input.is_action_just_pressed("e"):
-			fly = !fly
+			if !fly and mana > 10:
+				mana -= 10
+				fly = true
+			elif fly:
+				fly = false
 		#if Input.is_action_just_pressed("ui_down") && is_on_floor():
 			#position += Vector2(0, 1)
 			#velocity.y = 1000
@@ -132,19 +138,22 @@ func GetInput():
 
 func kickback(force):
 	if !fly:
-		velocity = Vector2(cos(cursorRot) * -force, sin(cursorRot) * -force)
+		if cursorRot:
+			velocity = Vector2(cos(cursorRot) * -force, sin(cursorRot) * -force)
 
 func CheckJump():
 	if jumpTimer < jumpTimerGoal:
 		if is_on_floor():
-			velocity.y = jumpVelocity
+			
 			if Input.is_action_pressed("ui_left") || Input.is_action_pressed("ui_right"):
+				velocity.y = jumpVelocity / 1.5
 				$Sprite.play("Side Jump")
 				velocity.x += sideJumpAcceleration * $Sprite.scale.x
 				sideJump = false
 				#jumpStart = true
 			else:
 				$Sprite.play("Jump")
+				velocity.y = jumpVelocity
 				#jumpStart = true
 
 func GetHWeight():
