@@ -1,4 +1,4 @@
-[gd_scene load_steps=64 format=2]
+[gd_scene load_steps=63 format=2]
 
 [ext_resource path="res://Sprites/Model textures/model-jumping-while-running-Sheet.png" type="Texture" id=1]
 [ext_resource path="res://Scripts/Player.gd" type="Script" id=2]
@@ -25,6 +25,18 @@ polygon = PoolVector2Array( -21, -21, -20, 113, 191, 113, 191, -20 )
 
 [sub_resource type="Curve" id=5]
 _data = [ Vector2( 0, 1 ), 0.0, -0.813393, 0, 0, Vector2( 1, 0 ), -0.9, 0.0, 0, 0 ]
+
+[sub_resource type="AtlasTexture" id=42]
+atlas = ExtResource( 1 )
+region = Rect2( 0, 0, 64, 64 )
+
+[sub_resource type="AtlasTexture" id=43]
+atlas = ExtResource( 1 )
+region = Rect2( 64, 0, 64, 64 )
+
+[sub_resource type="AtlasTexture" id=58]
+atlas = ExtResource( 1 )
+region = Rect2( 192, 0, 64, 64 )
 
 [sub_resource type="AtlasTexture" id=6]
 atlas = ExtResource( 3 )
@@ -58,19 +70,19 @@ region = Rect2( 384, 0, 64, 64 )
 atlas = ExtResource( 3 )
 region = Rect2( 448, 0, 64, 64 )
 
-[sub_resource type="AtlasTexture" id=14]
+[sub_resource type="AtlasTexture" id=54]
 atlas = ExtResource( 4 )
 region = Rect2( 320, 0, 64, 64 )
 
-[sub_resource type="AtlasTexture" id=15]
+[sub_resource type="AtlasTexture" id=55]
 atlas = ExtResource( 4 )
 region = Rect2( 384, 0, 64, 64 )
 
-[sub_resource type="AtlasTexture" id=16]
+[sub_resource type="AtlasTexture" id=56]
 atlas = ExtResource( 4 )
 region = Rect2( 192, 0, 64, 64 )
 
-[sub_resource type="AtlasTexture" id=17]
+[sub_resource type="AtlasTexture" id=57]
 atlas = ExtResource( 4 )
 region = Rect2( 256, 0, 64, 64 )
 
@@ -170,59 +182,53 @@ region = Rect2( 0, 288, 192, 32 )
 atlas = ExtResource( 11 )
 region = Rect2( 0, 320, 192, 32 )
 
-[sub_resource type="AtlasTexture" id=42]
-atlas = ExtResource( 1 )
-region = Rect2( 0, 0, 64, 64 )
-
-[sub_resource type="AtlasTexture" id=43]
-atlas = ExtResource( 1 )
-region = Rect2( 64, 0, 64, 64 )
-
-[sub_resource type="AtlasTexture" id=44]
-atlas = ExtResource( 1 )
-region = Rect2( 128, 0, 64, 64 )
-
-[sub_resource type="AtlasTexture" id=45]
-atlas = ExtResource( 1 )
-region = Rect2( 192, 0, 64, 64 )
-
-[sub_resource type="AtlasTexture" id=46]
-atlas = ExtResource( 1 )
-region = Rect2( 256, 0, 64, 64 )
-
 [sub_resource type="AtlasTexture" id=47]
-atlas = ExtResource( 1 )
-region = Rect2( 320, 0, 64, 64 )
+atlas = ExtResource( 7 )
+region = Rect2( 0, 0, 64, 64 )
 
 [sub_resource type="AtlasTexture" id=48]
 atlas = ExtResource( 7 )
-region = Rect2( 0, 0, 64, 64 )
+region = Rect2( 64, 0, 64, 64 )
 
 [sub_resource type="AtlasTexture" id=49]
 atlas = ExtResource( 7 )
-region = Rect2( 64, 0, 64, 64 )
+region = Rect2( 128, 0, 64, 64 )
 
 [sub_resource type="AtlasTexture" id=50]
 atlas = ExtResource( 7 )
-region = Rect2( 128, 0, 64, 64 )
-
-[sub_resource type="AtlasTexture" id=51]
-atlas = ExtResource( 7 )
 region = Rect2( 192, 0, 64, 64 )
 
-[sub_resource type="SpriteFrames" id=52]
+[sub_resource type="AtlasTexture" id=59]
+atlas = ExtResource( 1 )
+region = Rect2( 128, 0, 64, 64 )
+
+[sub_resource type="AtlasTexture" id=60]
+atlas = ExtResource( 1 )
+region = Rect2( 64, 0, 64, 64 )
+
+[sub_resource type="SpriteFrames" id=51]
 animations = [ {
+"frames": [ SubResource( 42 ), SubResource( 43 ) ],
+"loop": false,
+"name": "Side Jump",
+"speed": 15.0
+}, {
+"frames": [ SubResource( 58 ) ],
+"loop": false,
+"name": "Side fall",
+"speed": 10.0
+}, {
 "frames": [ SubResource( 6 ), SubResource( 7 ), SubResource( 8 ), SubResource( 9 ), SubResource( 10 ), SubResource( 11 ), SubResource( 12 ), SubResource( 13 ) ],
 "loop": true,
 "name": "Idle",
 "speed": 7.0
 }, {
-"frames": [ SubResource( 14 ), SubResource( 15 ) ],
+"frames": [ SubResource( 54 ), SubResource( 55 ) ],
 "loop": true,
 "name": "Falling",
 "speed": 7.0
 }, {
-"frames": [ SubResource( 16 ), SubResource( 17 ) ],
+"frames": [ SubResource( 56 ), SubResource( 57 ) ],
 "loop": true,
 "name": "JumpUp",
 "speed": 7.0
@@ -230,7 +236,7 @@ animations = [ {
 "frames": [ SubResource( 18 ), SubResource( 19 ) ],
 "loop": false,
 "name": "Landing",
-"speed": 18.0
+"speed": 12.0
 }, {
 "frames": [ SubResource( 20 ), SubResource( 21 ), SubResource( 22 ), SubResource( 23 ), SubResource( 24 ), SubResource( 25 ), SubResource( 26 ), SubResource( 27 ) ],
 "loop": true,
@@ -247,23 +253,28 @@ animations = [ {
 "name": "Tossing a hat",
 "speed": 5.0
 }, {
-"frames": [ SubResource( 42 ), SubResource( 43 ), SubResource( 44 ), SubResource( 45 ), SubResource( 46 ), SubResource( 47 ) ],
-"loop": false,
-"name": "Side Jump",
-"speed": 20.0
-}, {
 "frames": [  ],
 "loop": true,
 "name": "Climbing",
 "speed": 6.0
 }, {
-"frames": [ SubResource( 48 ), SubResource( 49 ), SubResource( 50 ), SubResource( 51 ) ],
+"frames": [ SubResource( 47 ), SubResource( 48 ), SubResource( 49 ), SubResource( 50 ) ],
 "loop": false,
 "name": "PreIdle",
 "speed": 20.0
+}, {
+"frames": [ SubResource( 59 ) ],
+"loop": true,
+"name": "Side mid",
+"speed": 10.0
+}, {
+"frames": [ SubResource( 60 ) ],
+"loop": true,
+"name": "Side up",
+"speed": 10.0
 } ]
 
-[sub_resource type="RectangleShape2D" id=53]
+[sub_resource type="RectangleShape2D" id=52]
 extents = Vector2( 17, 16 )
 
 [node name="Player" type="KinematicBody2D"]
@@ -443,22 +454,20 @@ collision_mask = 9
 
 [node name="Sprite" type="AnimatedSprite" parent="."]
 position = Vector2( 0, -0.322159 )
-frames = SubResource( 52 )
-animation = "Side Jump"
-frame = 5
+frames = SubResource( 51 )
+animation = "Side mid"
 playing = true
 
 [node name="oldSprite" type="AnimatedSprite" parent="."]
 visible = false
 position = Vector2( 0, -0.322159 )
-frames = SubResource( 52 )
-animation = "Landing"
-frame = 1
-playing = true
+frames = SubResource( 51 )
+animation = "Side mid"
 
 [node name="Collider" type="CollisionShape2D" parent="."]
+visible = false
 position = Vector2( 0, 15.6778 )
-shape = SubResource( 53 )
+shape = SubResource( 52 )
 
 [node name="TOS" type="Label" parent="."]
 margin_left = -19.0

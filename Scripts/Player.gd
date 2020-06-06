@@ -36,6 +36,7 @@ var rotatingRayRad = 0.1
 
 
 func _ready():
+	#Engine.time_scale = 0.5
 	jumpTimer = jumpTimerGoal
 	$"../Light2D/AnimationPlayer".current_animation = "Light"
 
@@ -71,7 +72,7 @@ func _physics_process(delta):
 
 
 func ProcessAnimation():
-	if !fly:
+	if !fly and !sideJump:
 		if Input.is_action_pressed("ui_right") || Input.is_action_pressed("ui_left"):
 			if is_on_floor() and !firstAnimL and !landing:
 				$Sprite.play("Run")
@@ -96,6 +97,18 @@ func ProcessAnimation():
 				elif velocity.y < 0:
 					$Sprite.play("JumpUp")
 					firstAnimL = true
+			else:
+				if velocity.y >= 40:
+					$Sprite.play("Side fall")
+					firstAnimL = true 
+					if velocity.y >= 500:
+						Damage(velocity.y / 1000)
+				elif velocity.y <= 40 and velocity.y >= -40:
+					$Sprite.play("Side mid")
+					firstAnimL = true
+				elif velocity.y < 40:
+					$Sprite.play("Side up")
+					firstAnimL = true
 		
 		if Input.is_action_just_pressed("attack") && is_on_floor() && mana > 10 && !aiming:
 			hatTimer = 0
@@ -109,32 +122,33 @@ func ProcessAnimation():
 			velocity.x = 0
 
 func GetInput():
-	if Input.is_action_pressed("aim"):
-		aiming = true
-	else:
-		aiming = false
-	if Input.is_action_just_pressed("ui_cancel"):
-		pauseManager.Pause()
-	if Input.is_action_just_pressed("restart"):
-		pauseManager.Restart()
-	if !casting:
-		if Input.is_action_just_pressed("e"):
-			if !fly and mana > 10:
-				mana -= 10
-				fly = true
-			elif fly:
-				fly = false
-		#if Input.is_action_just_pressed("ui_down") && is_on_floor():
-			#position += Vector2(0, 1)
-			#velocity.y = 1000
-		var moveDirection = -int(Input.is_action_pressed("ui_left")) + int(Input.is_action_pressed("ui_right"))
-		if !fly:
-			velocity.x = lerp(velocity.x, walkSpeed * moveDirection, GetHWeight())
+	if !sideJump:
+		if Input.is_action_pressed("aim"):
+			aiming = true
 		else:
-			velocity.x = lerp(velocity.x, walkSpeed * moveDirection * 3, GetHWeight())
-			velocity.y = lerp(velocity.y, walkSpeed * (-int(Input.is_action_pressed("ui_up")) + int(Input.is_action_pressed("ui_down"))) * 3, GetHWeight())
-		if moveDirection != 0:
-			$Sprite.scale.x = moveDirection
+			aiming = false
+		if Input.is_action_just_pressed("ui_cancel"):
+			pauseManager.Pause()
+		if Input.is_action_just_pressed("restart"):
+			pauseManager.Restart()
+		if !casting:
+			if Input.is_action_just_pressed("e"):
+				if !fly and mana > 10:
+					mana -= 10
+					fly = true
+				elif fly:
+					fly = false
+			#if Input.is_action_just_pressed("ui_down") && is_on_floor():
+				#position += Vector2(0, 1)
+				#velocity.y = 1000
+			var moveDirection = -int(Input.is_action_pressed("ui_left")) + int(Input.is_action_pressed("ui_right"))
+			if !fly:
+				velocity.x = lerp(velocity.x, walkSpeed * moveDirection, GetHWeight())
+			else:
+				velocity.x = lerp(velocity.x, walkSpeed * moveDirection * 3, GetHWeight())
+				velocity.y = lerp(velocity.y, walkSpeed * (-int(Input.is_action_pressed("ui_up")) + int(Input.is_action_pressed("ui_down"))) * 3, GetHWeight())
+			if moveDirection != 0:
+				$Sprite.scale.x = moveDirection
 
 func kickback(force):
 	if !fly:
@@ -146,14 +160,18 @@ func CheckJump():
 		if is_on_floor():
 			
 			if Input.is_action_pressed("ui_left") || Input.is_action_pressed("ui_right"):
-				velocity.y = jumpVelocity / 1.5
+				
 				$Sprite.play("Side Jump")
-				velocity.x += sideJumpAcceleration * $Sprite.scale.x
+				sideJump = true
+				yield($Sprite, "animation_finished")
+				velocity.y = jumpVelocity
+				velocity.x = sideJumpAcceleration * $Sprite.scale.x
 				sideJump = false
 				#jumpStart = true
 			else:
 				$Sprite.play("Jump")
 				velocity.y = jumpVelocity
+				sideJump = false
 				#jumpStart = true
 
 func GetHWeight():
