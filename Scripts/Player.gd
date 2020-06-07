@@ -50,7 +50,7 @@ func _process(delta):
 	
 	ProcessAnimation()
 	$TOS.text = str(fly)
-	#$TOS2.text = str()
+	$TOS2.text = str(is_on_floor())
 	if mana < 100: mana += delta
 	ManaProcess(delta)
 	$"MainCamera/Mana".value = manaDisplay
@@ -74,15 +74,17 @@ func _physics_process(delta):
 func ProcessAnimation():
 	if !fly and !sideJump:
 		if Input.is_action_pressed("ui_right") || Input.is_action_pressed("ui_left"):
-			if is_on_floor() and !firstAnimL and !landing:
+			if is_on_floor() and !firstAnimL:
 				$Sprite.play("Run")
 		
 		if is_on_floor():
 			if firstAnimL:
 				if !landing:
-					firstAnimL = false
 					landing = true
 					$Sprite.play("Landing")
+					yield($Sprite, "animation_finished")
+					landing = false
+					firstAnimL = false
 			elif !landing and !Input.is_action_pressed("ui_right") && !Input.is_action_pressed("ui_left"):
 				$Sprite.play("Idle")
 		
@@ -156,6 +158,7 @@ func kickback(force):
 func CheckJump():
 	if jumpTimer < jumpTimerGoal:
 		if is_on_floor():
+			jumpTimer = jumpTimerGoal
 			if Input.is_action_pressed("ui_left") || Input.is_action_pressed("ui_right"):
 				$Sprite.play("Side Jump")
 				sideJump = true
@@ -169,9 +172,10 @@ func CheckJump():
 				$Sprite.play("Jump")
 				velocity.y = jumpVelocity
 				sideJump = false
+			
 
 func GetHWeight():
-	return 0.2 if is_on_floor() else 0.1
+	return 0.2 #if is_on_floor() else 0.08
 
 func _input(event):
 	if !casting and !fly:
