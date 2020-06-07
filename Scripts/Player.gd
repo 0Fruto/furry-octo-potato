@@ -78,7 +78,6 @@ func ProcessAnimation():
 				$Sprite.play("Run")
 		
 		if is_on_floor():
-			sideJump = false
 			if firstAnimL:
 				if !landing:
 					firstAnimL = false
@@ -97,7 +96,7 @@ func ProcessAnimation():
 				elif velocity.y < 0:
 					$Sprite.play("JumpUp")
 					firstAnimL = true
-			else:
+			elif Input.is_action_pressed("ui_left") or Input.is_action_pressed("ui_right"):
 				if velocity.y >= 40:
 					$Sprite.play("Side fall")
 					firstAnimL = true 
@@ -106,9 +105,8 @@ func ProcessAnimation():
 				elif velocity.y <= 40 and velocity.y >= -40:
 					$Sprite.play("Side mid")
 					firstAnimL = true
-				elif velocity.y < 40:
+				elif velocity.y < -40:
 					$Sprite.play("Side up")
-					firstAnimL = true
 		
 		if Input.is_action_just_pressed("attack") && is_on_floor() && mana > 10 && !aiming:
 			hatTimer = 0
@@ -122,7 +120,7 @@ func ProcessAnimation():
 			velocity.x = 0
 
 func GetInput():
-	if !sideJump:
+	#if !sideJump:
 		if Input.is_action_pressed("aim"):
 			aiming = true
 		else:
@@ -158,21 +156,19 @@ func kickback(force):
 func CheckJump():
 	if jumpTimer < jumpTimerGoal:
 		if is_on_floor():
-			
 			if Input.is_action_pressed("ui_left") || Input.is_action_pressed("ui_right"):
-				
 				$Sprite.play("Side Jump")
 				sideJump = true
 				yield($Sprite, "animation_finished")
 				velocity.y = jumpVelocity
 				velocity.x = sideJumpAcceleration * $Sprite.scale.x
+				$Sprite.play("Side up")
+				yield(get_tree().create_timer(0.1), "timeout")
 				sideJump = false
-				#jumpStart = true
 			else:
 				$Sprite.play("Jump")
 				velocity.y = jumpVelocity
 				sideJump = false
-				#jumpStart = true
 
 func GetHWeight():
 	return 0.2 if is_on_floor() else 0.1
