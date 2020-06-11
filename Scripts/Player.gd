@@ -4,11 +4,11 @@ export var health = 100
 export var mana = 100
 var manaDisplay = 100
 
-export var sideJumpAcceleration = 500
+export var sideJumpAcceleration = 600
 export var slopeStop = 64
 export var gravity = 1000.0
 export var walkSpeed = 170
-export var jumpVelocity = -400
+export var jumpVelocity = -350
 export var jumpTimerGoal = 2
 var jumpTimer = 0
 
@@ -27,6 +27,8 @@ var aiming = true
 var fly = false
 var flyTimer = 100
 
+var alive = true
+
 onready var pauseManager = $MainCamera/Pause
 
 var cursorRot
@@ -36,29 +38,34 @@ var rotatingRayRad = 0.1
 
 
 func _ready():
+	ColToIdle()
 	#Engine.time_scale = 0.5
 	jumpTimer = jumpTimerGoal
 	$"../Light2D/AnimationPlayer".current_animation = "Light"
 
 func _process(delta):
-	FlyProcess()
-	var rotDifference = get_global_mouse_position() - global_position
-	cursorRot = atan2(rotDifference.y, rotDifference.x)
-	HatAnimationProcess(delta)
-	if jumpTimer < jumpTimerGoal:
-		jumpTimer += delta * 10
-	
-	ProcessAnimation()
-	$TOS.text = str(fly)
-	$TOS2.text = str(is_on_floor())
-	if mana < 100: mana += delta
-	ManaProcess(delta)
-	$"MainCamera/Mana".value = manaDisplay
-	$"MainCamera/Health".value = health
+	if alive:
+		if health <= 0:
+			Die()
+		FlyProcess()
+		var rotDifference = get_global_mouse_position() - global_position
+		cursorRot = atan2(rotDifference.y, rotDifference.x)
+		HatAnimationProcess(delta)
+		if jumpTimer < jumpTimerGoal:
+			jumpTimer += delta * 10
+		
+		ProcessAnimation()
+		$TOS.text = str(fly)
+		$TOS2.text = str(is_on_floor())
+		if mana < 100: mana += delta
+		ManaProcess(delta)
+		$"MainCamera/Mana".value = manaDisplay
+		$"MainCamera/Health".value = health
 
 func _physics_process(delta):
-	CheckJump()
-	GetInput()
+	if alive:
+		CheckJump()
+		GetInput()
 	if !fly:
 		velocity.y += gravity * delta
 	velocity = move_and_slide(velocity, Vector2(0, -1), slopeStop)
@@ -72,10 +79,11 @@ func _physics_process(delta):
 
 
 func ProcessAnimation():
-	if !fly and !sideJump:
+	if !fly and !sideJump and alive:
 		if Input.is_action_pressed("ui_right") || Input.is_action_pressed("ui_left"):
 			if is_on_floor() and !firstAnimL:
 				$Sprite.play("Run")
+				ColToRun()
 		
 		if is_on_floor():
 			if firstAnimL:
@@ -83,32 +91,39 @@ func ProcessAnimation():
 					landing = true
 					$Sprite.play("Landing")
 					yield($Sprite, "animation_finished")
+					ColToIdle()
 					landing = false
 					firstAnimL = false
 			elif !landing and !Input.is_action_pressed("ui_right") && !Input.is_action_pressed("ui_left"):
 				$Sprite.play("Idle")
+				ColToIdle()
 		
 		elif !is_on_floor():
 			if !Input.is_action_pressed("ui_left") and !Input.is_action_pressed("ui_right"):
 				if velocity.y >= 0:
 					$Sprite.play("Falling")
+					ColToIdle()
 					firstAnimL = true 
 					if velocity.y >= 500:
 						Damage(velocity.y / 1000)
 				elif velocity.y < 0:
 					$Sprite.play("JumpUp")
+					ColToIdle()
 					firstAnimL = true
 			elif Input.is_action_pressed("ui_left") or Input.is_action_pressed("ui_right"):
 				if velocity.y >= 40:
 					$Sprite.play("Side fall")
+					ColToRun()
 					firstAnimL = true 
 					if velocity.y >= 500:
 						Damage(velocity.y / 1000)
 				elif velocity.y <= 40 and velocity.y >= -40:
 					$Sprite.play("Side mid")
+					ColToRun()
 					firstAnimL = true
 				elif velocity.y < -40:
 					$Sprite.play("Side up")
+					ColToRun()
 		
 		if Input.is_action_just_pressed("attack") && is_on_floor() && mana > 10 && !aiming:
 			hatTimer = 0
@@ -122,7 +137,7 @@ func ProcessAnimation():
 			velocity.x = 0
 
 func GetInput():
-	#if !sideJump:
+	if alive:
 		if Input.is_action_pressed("aim"):
 			aiming = true
 		else:
@@ -148,6 +163,8 @@ func GetInput():
 				velocity.x = lerp(velocity.x, walkSpeed * moveDirection * 3, GetHWeight())
 				velocity.y = lerp(velocity.y, walkSpeed * (-int(Input.is_action_pressed("ui_up")) + int(Input.is_action_pressed("ui_down"))) * 3, GetHWeight())
 			if moveDirection != 0:
+				$ColliderRun.scale.x = moveDirection
+				$Collider.position.x = 5 * moveDirection
 				$Sprite.scale.x = moveDirection
 
 func kickback(force):
@@ -156,14 +173,15 @@ func kickback(force):
 			velocity = Vector2(cos(cursorRot) * -force, sin(cursorRot) * -force)
 
 func CheckJump():
-	if jumpTimer < jumpTimerGoal:
+	if jumpTimer < jumpTimerGoal and alive:
 		if is_on_floor():
 			jumpTimer = jumpTimerGoal
 			if Input.is_action_pressed("ui_left") || Input.is_action_pressed("ui_right"):
 				$Sprite.play("Side Jump")
+				ColToRun()
 				sideJump = true
 				yield($Sprite, "animation_finished")
-				velocity.y = jumpVelocity
+				velocity.y = jumpVelocity + 100
 				velocity.x = sideJumpAcceleration * $Sprite.scale.x
 				$Sprite.play("Side up")
 				yield(get_tree().create_timer(0.1), "timeout")
@@ -178,7 +196,7 @@ func GetHWeight():
 	return 0.2 #if is_on_floor() else 0.08
 
 func _input(event):
-	if !casting and !fly:
+	if !casting and !fly and alive:
 		if event.is_action_pressed("jump"):
 			jumpTimer = 0
 
@@ -223,6 +241,7 @@ func FlyProcess():
 			if rock.offset.y < 30:
 				rock.offset.y = 0
 			$Sprite.play("Idle")
+			ColToIdle()
 			flyTimer -= 1
 		else:
 			fly = false
@@ -233,3 +252,19 @@ func FlyProcess():
 
 func Damage(damage):
 	health -= damage
+	$"MainCamera/Health".value = health
+
+func ColToRun():
+	$Collider.disabled = true
+	$ColliderRun.disabled = false
+	
+func ColToIdle():
+	$Collider.disabled = false
+	$ColliderRun.disabled = true
+
+func Die():
+	alive = false
+	velocity.x = 0
+	$Sprite.play("Death")
+	yield($Sprite, "animation_finished")
+	$MainCamera/Pause.Pause()

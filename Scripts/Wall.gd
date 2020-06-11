@@ -7,6 +7,7 @@ var posX = 100
 var posStart
 
 func _ready():
+	$Wall.play("Building")
 	rotation = deg2rad($"/root/Game/Cursor".wallRotation)
 	posStart = $"/root/Game/Cursor/Wall".global_position
 	position = posStart
@@ -15,7 +16,15 @@ func _ready():
 	if rotation > 0:
 		posX *= -1
 
-func _process(delta):
+func _process(_delta):
+	#WallPosition()
+	pass
+
+func DestroyWall():
+	$Wall.hide()
+	$Collider.disabled = true
+
+func WallPosition():
 	if rotation == 0:
 		if posY > posGoalY:
 			posY -= 10
@@ -28,7 +37,3 @@ func _process(delta):
 		if posX > posGoalX:
 			posX -= 10
 			global_position.x = -posX + posStart.x
-
-func DestroyWall():
-	$Collider/Wall.hide()
-	$Collider.disabled = true

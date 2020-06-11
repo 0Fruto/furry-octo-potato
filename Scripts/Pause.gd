@@ -13,7 +13,9 @@ func Resume():
 	#Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 func Restart():
+	get_tree().paused = false
 	get_tree().reload_current_scene()
+	$"../..".alive = true
 
 func _on_Resume_pressed():
 	Resume()
@@ -21,3 +23,7 @@ func _on_Resume_pressed():
 
 func _on_Quit_pressed():
 	get_tree().quit()
+
+
+func _on_Restart_pressed():
+	Restart()
