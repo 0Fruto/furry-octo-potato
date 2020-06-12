@@ -4,10 +4,10 @@ export var health = 100
 export var mana = 100
 var manaDisplay = 100
 
-export var sideJumpAcceleration = 600
+export var sideJumpAcceleration = 650
 export var slopeStop = 64
 export var gravity = 1000.0
-export var walkSpeed = 170
+export var walkSpeed = 250
 export var jumpVelocity = -350
 export var jumpTimerGoal = 2
 var jumpTimer = 0
@@ -183,7 +183,7 @@ func CheckJump():
 				ColToRun()
 				sideJump = true
 				yield($Sprite, "animation_finished")
-				velocity.y = jumpVelocity + 100
+				velocity.y = jumpVelocity
 				velocity.x = sideJumpAcceleration * $Sprite.scale.x
 				$Sprite.play("Side up")
 				yield(get_tree().create_timer(0.1), "timeout")

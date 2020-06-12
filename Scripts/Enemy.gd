@@ -16,6 +16,8 @@ var shoot = true
 
 var seeEnemy = false
 
+var mayRotate = true
+
 func _ready():
 	$Cast.cast_to = Vector2(0,0)
 	walkPoint1 = global_position.x + walkRadius
@@ -24,6 +26,11 @@ func _ready():
 func _process(delta):
 	EnemyDetection()
 	AnimationProcess()
+	if mayRotate and !seeEnemy and $WallCast.is_colliding():
+		mayRotate = false
+		direction *= -1
+		yield(get_tree().create_timer(1),"timeout")
+		mayRotate = true
 	if !seeEnemy and global_position.x > walkPoint1:
 		direction = -1
 	elif !seeEnemy and global_position.x < walkPoint2:

@@ -4,6 +4,7 @@ var spawnPos
 export var xOffset = 20
 export var yOffset = 0
 export var speed = 10
+export var scatter = 10
 var fly = true
 var animCounter = 1
 var remove = false
@@ -42,7 +43,7 @@ func _process(_delta):
 
 func GetStartRot():
 	var difference = $"/root/Game/Player".global_position - $"../Enemy".global_position
-	rotation = atan2(difference.y, difference.x)
+	rotation = atan2(rand_range(difference.y - scatter, difference.y + scatter), rand_range(difference.x - scatter, difference.x + scatter))
 	xOffset = cos(rotation) * 25
 	yOffset = sin(rotation) * 25
 	motion = Vector2(cos(rotation), sin(rotation))
