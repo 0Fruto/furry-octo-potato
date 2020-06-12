@@ -17,10 +17,10 @@ _global_script_class_icons={
 
 config/name="furry octo potato"
 run/main_scene="res://Scenes/Main menu.tscn"
-boot_splash/image="res://Sprites/With BG/Guru.png"
+boot_splash/image="res://Sprites/Startup.png"
 boot_splash/fullsize=false
 boot_splash/use_filter=false
-boot_splash/bg_color=Color( 0.466667, 0.796078, 0.0666667, 1 )
+boot_splash/bg_color=Color( 0.741176, 0.898039, 0.862745, 1 )
 config/icon="res://Sprites/With BG/Guru.png"
 config/macos_native_icon="res://Sprites/With BG/Guru.png"
 config/windows_native_icon="res://Sprites/With BG/Guru.png"

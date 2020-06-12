@@ -68,6 +68,8 @@ func _physics_process(delta):
 		GetInput()
 	if !fly:
 		velocity.y += gravity * delta
+	if !alive:
+		velocity.x = 0
 	velocity = move_and_slide(velocity, Vector2(0, -1), slopeStop)
 
 
@@ -267,4 +269,4 @@ func Die():
 	velocity.x = 0
 	$Sprite.play("Death")
 	yield($Sprite, "animation_finished")
-	$MainCamera/Pause.Pause()
+	$MainCamera/Death.Pause()

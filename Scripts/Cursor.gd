@@ -7,7 +7,7 @@ func _ready():
 
 func _process(_delta):
 	global_position = get_global_mouse_position()
-	$Light.color = Color(rand_range(0,32767), rand_range(0,32767), rand_range(0,32767), 1)
+	$Light.color = Color(rand_range(0,32767 * 1000), rand_range(0,32767 * 1000), rand_range(0,32767 * 1000), 1)
 	WallAim()
 
 func WallAim():

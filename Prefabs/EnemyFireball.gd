@@ -24,10 +24,13 @@ func _ready():
 	global_position = spawnPos
 
 func _process(_delta):
-	var body = move_and_collide(motion)
-	if body:
-		#if body != $"/root/Game/Player":
+	if fly:
+		var body = move_and_collide(motion)
+		if body:
 			if body.collider.name == "TileMap":
+				$Texture.offset.x = -16
+				$Texture.play("Wall")
+			if body.collider.name == "Wall":
 				$Texture.offset.x = -16
 				$Texture.play("Wall")
 			if body.collider.name == "Player":

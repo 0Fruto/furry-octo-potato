@@ -7,22 +7,22 @@
 [sub_resource type="CircleShape2D" id=1]
 radius = 5.0
 
-[sub_resource type="CanvasItemMaterial" id=7]
+[sub_resource type="CanvasItemMaterial" id=2]
 light_mode = 1
 
-[sub_resource type="AtlasTexture" id=4]
+[sub_resource type="AtlasTexture" id=3]
 atlas = ExtResource( 3 )
 region = Rect2( 256, 0, 64, 64 )
 
-[sub_resource type="SpriteFrames" id=5]
+[sub_resource type="SpriteFrames" id=4]
 animations = [ {
-"frames": [ SubResource( 4 ) ],
+"frames": [ SubResource( 3 ) ],
 "loop": true,
 "name": "Idle",
 "speed": 4.0
 } ]
 
-[sub_resource type="CanvasItemMaterial" id=6]
+[sub_resource type="CanvasItemMaterial" id=5]
 blend_mode = 4
 light_mode = 1
 
@@ -31,6 +31,10 @@ script = ExtResource( 2 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource( 1 )
+
+[node name="Sprite" type="Sprite" parent="."]
+scale = Vector2( 0.089021, 0.089021 )
+texture = ExtResource( 1 )
 
 [node name="Light" type="Light2D" parent="."]
 modulate = Color( 100, 100, 100, 1 )
@@ -58,8 +62,8 @@ collision_mask = 1024
 [node name="Wall" type="AnimatedSprite" parent="."]
 visible = false
 modulate = Color( 1, 1, 1, 0.352941 )
-material = SubResource( 7 )
-frames = SubResource( 5 )
+material = SubResource( 2 )
+frames = SubResource( 4 )
 animation = "Idle"
 playing = true
 offset = Vector2( -5, -32 )
@@ -67,6 +71,6 @@ offset = Vector2( -5, -32 )
 [node name="Wall2" type="Sprite" parent="."]
 visible = false
 modulate = Color( 0, 1.64, 2.96, 0.58 )
-material = SubResource( 6 )
+material = SubResource( 5 )
 scale = Vector2( 0.074, 0.198 )
 offset = Vector2( 0, -160 )

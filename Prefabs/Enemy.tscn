@@ -59,6 +59,7 @@ shape = SubResource( 1 )
 [node name="Sprite" type="AnimatedSprite" parent="Enemy"]
 frames = SubResource( 7 )
 animation = "Idle"
+frame = 1
 playing = true
 
 [node name="WallCast" type="RayCast2D" parent="Enemy"]

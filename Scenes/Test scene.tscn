@@ -83,6 +83,7 @@ rotation = 1.5708
 z_index = -2
 frames = SubResource( 4 )
 animation = "Idle"
+frame = 1
 playing = true
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
