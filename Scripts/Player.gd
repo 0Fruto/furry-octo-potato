@@ -28,6 +28,7 @@ var fly = false
 var flyTimer = 100
 
 var alive = true
+var highDeath = false
 
 onready var pauseManager = $MainCamera/Pause
 
@@ -55,7 +56,7 @@ func _process(delta):
 			jumpTimer += delta * 10
 		
 		ProcessAnimation()
-		$TOS.text = str(fly)
+		$TOS.text = str(velocity.y)
 		$TOS2.text = str(is_on_floor())
 		if mana < 100: mana += delta
 		ManaProcess(delta)
@@ -63,6 +64,7 @@ func _process(delta):
 		$"MainCamera/Health".value = health
 
 func _physics_process(delta):
+	CheckHighDeath()
 	if alive:
 		CheckJump()
 		GetInput()
@@ -106,8 +108,6 @@ func ProcessAnimation():
 					$Sprite.play("Falling")
 					ColToIdle()
 					firstAnimL = true 
-					if velocity.y >= 500:
-						Damage(velocity.y / 1000)
 				elif velocity.y < 0:
 					$Sprite.play("JumpUp")
 					ColToIdle()
@@ -116,9 +116,7 @@ func ProcessAnimation():
 				if velocity.y >= 40:
 					$Sprite.play("Side fall")
 					ColToRun()
-					firstAnimL = true 
-					if velocity.y >= 500:
-						Damage(velocity.y / 1000)
+					firstAnimL = true
 				elif velocity.y <= 40 and velocity.y >= -40:
 					$Sprite.play("Side mid")
 					ColToRun()
@@ -267,6 +265,16 @@ func ColToIdle():
 func Die():
 	alive = false
 	velocity.x = 0
-	$Sprite.play("Death")
+	if highDeath:
+		$Sprite.play("HighDeath")
+	else:
+		$Sprite.play("Death")
 	yield($Sprite, "animation_finished")
 	$MainCamera/Death.Pause()
+
+func CheckHighDeath():
+	if $Left.is_colliding() or $Right.is_colliding():
+		if velocity.y >= 500:
+			Damage(velocity.y)
+			if health <= 0:
+				highDeath = true

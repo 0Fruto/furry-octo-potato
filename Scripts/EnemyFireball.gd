@@ -10,7 +10,7 @@ var animCounter = 1
 var remove = false
 var enemy
 var colPoint
-var damage = 100
+var damage = 50
 export var disappearCounterGoal = 2
 var disappearCounter = 0
 var disappear = true
