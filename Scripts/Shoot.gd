@@ -11,11 +11,21 @@ func _ready():
 	loadWall = preload("res://Prefabs/Wall.tscn")
 
 func _process(_delta):
-	if !$Player.casting && !$Player.tossingHat && !$Player.aiming:
-		if Input.is_action_just_pressed("attack"):
-			CastFireball()
-		if Input.is_action_just_pressed("wall"):
-			CastCrystal()
+	if !$Player.casting && !$Player.tossingHat:
+		if Input.is_action_pressed("wall"):
+			$Player.aiming = true
+			Global.castMode = "wall"
+		elif Input.is_action_just_released("wall"):
+			if $Cursor/Cast.is_colliding() or $Cursor/CastL.is_colliding() or $Cursor/CastR.is_colliding():
+				BuildWall()
+		
+		if Input.is_action_pressed("attack"):
+			$Player.aiming = true
+			Global.castMode = "hurl"
+		elif Input.is_action_just_released("attack"):
+			pass
+		if !Input.is_action_pressed("wall") and !Input.is_action_pressed("attack"):
+			$Player.aiming = false
 
 func CastFireball():
 	if $Player.mana > 10:

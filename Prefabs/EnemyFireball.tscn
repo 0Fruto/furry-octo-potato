@@ -144,7 +144,6 @@ position = Vector2( 0, -0.659996 )
 z_index = 1
 frames = SubResource( 24 )
 animation = "Idle"
-frame = 3
 playing = true
 offset = Vector2( 0, -9 )
 

@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/Звонок в «Яблоко» - Путин тебя любит (www.hotplayer.ru).wav-8fdda186cd783a2cc59e78b3d2df9741.sample"
+
+[deps]
+
+source_file="res://Trash/Звонок в «Яблоко» - Путин тебя любит (www.hotplayer.ru).wav"
+dest_files=[ "res://.import/Звонок в «Яблоко» - Путин тебя любит (www.hotplayer.ru).wav-8fdda186cd783a2cc59e78b3d2df9741.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

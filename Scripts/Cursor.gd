@@ -11,7 +11,7 @@ func _process(_delta):
 	WallAim()
 
 func WallAim():
-	if $"/root/Game/Player".aiming:
+	if $"/root/Game/Player".aiming and Global.castMode == "wall":
 		$Cast.enabled = true
 		$CastR.enabled = true
 		$CastL.enabled = true
@@ -67,9 +67,6 @@ func WallAim():
 			elif $Cast.is_colliding() and !$CastR.is_colliding() and !$CastR.is_colliding():
 				$Wall.global_position = $Cast.get_collision_point()
 				wallRotation = 0
-			
-			if Input.is_action_just_pressed("attack"):
-				$"/root/Game".BuildWall()
 		else:
 			$Wall.hide()
 	else:

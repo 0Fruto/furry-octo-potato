@@ -32,6 +32,9 @@ var highDeath = false
 
 onready var pauseManager = $MainCamera/Pause
 
+var loadFakeBottle
+var fakeBottleCounter = 0
+
 var cursorRot
 
 export var rotatingRayRadNormal = 0.1
@@ -43,12 +46,19 @@ func _ready():
 	#Engine.time_scale = 0.5
 	jumpTimer = jumpTimerGoal
 	$"../Light2D/AnimationPlayer".current_animation = "Light"
+	loadFakeBottle = preload("res://Prefabs/FakeBottle.tscn")
 
 func _process(delta):
 	if alive:
+		if aiming:
+			$Sprite.play("Walking")
+			walkSpeed = 70
+		else:
+			walkSpeed = 250
 		if health <= 0:
 			Die()
 		FlyProcess()
+		BottleAim()
 		var rotDifference = get_global_mouse_position() - global_position
 		cursorRot = atan2(rotDifference.y, rotDifference.x)
 		HatAnimationProcess(delta)
@@ -57,7 +67,7 @@ func _process(delta):
 		
 		ProcessAnimation()
 		$TOS.text = str(velocity.y)
-		$TOS2.text = str(is_on_floor())
+		$TOS2.text = str(fakeBottleCounter)
 		if mana < 100: mana += delta
 		ManaProcess(delta)
 		$"MainCamera/Mana".value = manaDisplay
@@ -86,8 +96,11 @@ func ProcessAnimation():
 	if !fly and !sideJump and alive:
 		if Input.is_action_pressed("ui_right") || Input.is_action_pressed("ui_left"):
 			if is_on_floor() and !firstAnimL:
-				$Sprite.play("Run")
-				ColToRun()
+				if !aiming:
+					$Sprite.play("Run")
+					ColToRun()
+				else:
+					$Sprite.play("Walking")
 		
 		if is_on_floor():
 			if firstAnimL:
@@ -129,30 +142,30 @@ func ProcessAnimation():
 			hatTimer = 0
 			velocity.x = 0
 			#$Sprite.play("Fireball")
-			casting = true
+			#casting = true
 		if Input.is_action_just_pressed("wall") && is_on_floor() && mana > 10:
 			hatTimer = 0
 			#$Sprite.play("Set wall")
-			casting = true
+			#casting = true
 			velocity.x = 0
 
 func GetInput():
 	if alive:
-		if Input.is_action_pressed("aim"):
-			aiming = true
-		else:
-			aiming = false
+		
+		
 		if Input.is_action_just_pressed("ui_cancel"):
 			pauseManager.Pause()
 		if Input.is_action_just_pressed("restart"):
 			pauseManager.Restart()
 		if !casting:
-			if Input.is_action_just_pressed("e"):
+			if Input.is_action_just_pressed("fly"):
 				if !fly and mana > 10:
 					mana -= 10
 					fly = true
 				elif fly:
 					fly = false
+			elif !Input.is_action_pressed("fly"):
+				fly = false
 			#if Input.is_action_just_pressed("ui_down") && is_on_floor():
 				#position += Vector2(0, 1)
 				#velocity.y = 1000
@@ -166,6 +179,12 @@ func GetInput():
 				$ColliderRun.scale.x = moveDirection
 				$Collider.position.x = 5 * moveDirection
 				$Sprite.scale.x = moveDirection
+				if moveDirection == 1:
+					$Right.position.x = 12
+					$Left.position.x = -3
+				elif moveDirection == -1:
+					$Right.position.x = 3
+					$Left.position.x = -12
 
 func kickback(force):
 	if !fly:
@@ -278,3 +297,12 @@ func CheckHighDeath():
 			Damage(velocity.y)
 			if health <= 0:
 				highDeath = true
+
+func BottleAim():
+	if fakeBottleCounter > 10:
+		if aiming and Global.castMode == "hurl":
+			var fakeBottle = loadFakeBottle.instance()
+			add_child(fakeBottle)
+			fakeBottleCounter = 0
+	elif !aiming: 
+		fakeBottleCounter += 1
