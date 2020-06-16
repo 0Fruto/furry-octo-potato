@@ -23,6 +23,9 @@ var firstAnimL = true
 var landing = false
 var sideJump = false
 var aiming = true
+var climbing = false
+var climbingUp = false
+var dontClimb = 10
 
 var fly = false
 var flyTimer = 100
@@ -74,11 +77,12 @@ func _process(delta):
 		$"MainCamera/Health".value = health
 
 func _physics_process(delta):
+	Climbing()
 	CheckHighDeath()
 	if alive:
 		CheckJump()
 		GetInput()
-	if !fly:
+	if !fly and !climbing:
 		velocity.y += gravity * delta
 	if !alive:
 		velocity.x = 0
@@ -115,7 +119,7 @@ func ProcessAnimation():
 				$Sprite.play("Idle")
 				ColToIdle()
 		
-		elif !is_on_floor():
+		elif !is_on_floor() and !climbing:
 			if !Input.is_action_pressed("ui_left") and !Input.is_action_pressed("ui_right"):
 				if velocity.y >= 0:
 					$Sprite.play("Falling")
@@ -151,18 +155,17 @@ func ProcessAnimation():
 
 func GetInput():
 	if alive:
-		
-		
 		if Input.is_action_just_pressed("ui_cancel"):
 			pauseManager.Pause()
 		if Input.is_action_just_pressed("restart"):
 			pauseManager.Restart()
-		if !casting:
-			if Input.is_action_just_pressed("fly"):
-				if !fly and mana > 10:
-					mana -= 10
+		if !climbing:
+			if Input.is_action_pressed("fly"):
+				if mana > 1:
 					fly = true
-				elif fly:
+					if fly:
+						mana -= 1
+				else:
 					fly = false
 			elif !Input.is_action_pressed("fly"):
 				fly = false
@@ -179,6 +182,9 @@ func GetInput():
 				$ColliderRun.scale.x = moveDirection
 				$Collider.position.x = 5 * moveDirection
 				$Sprite.scale.x = moveDirection
+				$"Upper ray".position.x = 16 * $Sprite.scale.x
+				$"Upper ray".cast_to.x = 30 * $Sprite.scale.x
+				$"Short ray".cast_to.x = 30 * $Sprite.scale.x
 				if moveDirection == 1:
 					$Right.position.x = 12
 					$Left.position.x = -3
@@ -192,6 +198,7 @@ func kickback(force):
 			velocity = Vector2(cos(cursorRot) * -force, sin(cursorRot) * -force)
 
 func CheckJump():
+	#if (jumpTimer < jumpTimerGoal or Input.is_action_pressed("jump")) and alive:
 	if jumpTimer < jumpTimerGoal and alive:
 		if is_on_floor():
 			jumpTimer = jumpTimerGoal
@@ -253,17 +260,13 @@ func HatAnimationProcess(delta):
 func FlyProcess():
 	var rock = $Rock
 	if fly:
-		if flyTimer > 0:
-			rock.show()
-			if rock.offset.y > 0:
-				rock.offset.y -= 100
-			if rock.offset.y < 30:
-				rock.offset.y = 0
-			$Sprite.play("Idle")
-			ColToIdle()
-			flyTimer -= 1
-		else:
-			fly = false
+		rock.show()
+		if rock.offset.y > 0:
+			rock.offset.y -= 100
+		if rock.offset.y < 30:
+			rock.offset.y = 0
+		$Sprite.play("Idle")
+		ColToIdle()
 	else:
 		rock.hide()
 		rock.offset.y = 300
@@ -306,3 +309,33 @@ func BottleAim():
 			fakeBottleCounter = 0
 	elif !aiming: 
 		fakeBottleCounter += 1
+
+func Climbing():
+	if dontClimb <= 0:
+		if $"Short ray".is_colliding() and !$"Upper ray".is_colliding():
+			fly = false
+			velocity = Vector2(0,0)
+			if !is_on_wall():
+				velocity.x = $Sprite.scale.x * 100
+			if !climbingUp:
+				climbing = true
+				$Sprite.offset = Vector2(16, 5)
+				$Sprite.play("Climbing")
+			if Input.is_action_just_pressed("jump"):
+				climbingUp = true
+				$Sprite.play("ClimbingUp")
+				yield($Sprite, "animation_finished")
+				global_position += Vector2(20 * $Sprite.scale.x, -40)
+				climbingUp = false
+				climbing = false
+			if climbingUp:
+				$Sprite.offset = Vector2(16, -1)
+			if Input.is_action_just_pressed("ui_down"):
+				climbing = false
+				velocity.x = -500 * $Sprite.scale.x
+				dontClimb = 10
+		else:
+			climbing = false
+			$Sprite.offset = Vector2(0, 0)
+	if dontClimb > 0:
+		dontClimb -= 1
