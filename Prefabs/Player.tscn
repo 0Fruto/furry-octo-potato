@@ -445,7 +445,7 @@ animations = [ {
 "speed": 5.0
 }, {
 "frames": [ SubResource( 91 ), SubResource( 92 ), SubResource( 93 ) ],
-"loop": true,
+"loop": false,
 "name": "Climbing",
 "speed": 5.0
 }, {
@@ -507,7 +507,6 @@ __meta__ = {
 pause_mode = 2
 z_index = 100
 current = true
-smoothing_enabled = true
 smoothing_speed = 10.0
 
 [node name="Mana" type="TextureProgress" parent="MainCamera"]
@@ -770,16 +769,16 @@ width_curve = SubResource( 9 )
 default_color = Color( 1, 0, 0, 1 )
 
 [node name="Middle ray" type="RayCast2D" parent="."]
+visible = false
 position = Vector2( 0, -0.322159 )
 enabled = true
 cast_to = Vector2( 70, 0 )
-collision_mask = 9
 
 [node name="Short ray" type="RayCast2D" parent="."]
-position = Vector2( 0, -0.322159 )
+position = Vector2( 0, -1.32216 )
 enabled = true
 cast_to = Vector2( 30, 0 )
-collision_mask = 9
+collision_mask = 32768
 
 [node name="Left" type="RayCast2D" parent="."]
 position = Vector2( -3, 31.6778 )
@@ -791,16 +790,18 @@ collision_mask = 1037
 position = Vector2( 12, 31.6778 )
 enabled = true
 cast_to = Vector2( 0, 20 )
+collision_mask = 1037
 
 [node name="Upper ray" type="RayCast2D" parent="."]
-position = Vector2( 16, -4.32216 )
+position = Vector2( 16, -3.64215 )
 enabled = true
 cast_to = Vector2( 30, 0 )
+collision_mask = 32768
 
 [node name="Sprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 78 )
 animation = "Idle"
-frame = 4
+frame = 2
 playing = true
 
 [node name="Collider" type="CollisionShape2D" parent="."]
@@ -839,7 +840,7 @@ default_color = Color( 0.4, 0.501961, 1, 1 )
 gradient = SubResource( 81 )
 
 [node name="Light2D" type="Light2D" parent="."]
-position = Vector2( 1, 14.6778 )
+position = Vector2( 1, 15.3578 )
 texture = ExtResource( 9 )
 texture_scale = 5.76
 range_layer_min = -1

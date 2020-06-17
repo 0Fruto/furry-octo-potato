@@ -123,7 +123,10 @@ fly={
 
 [layer_names]
 
-2d_physics/layer_1="hello"
+2d_physics/layer_1="Main"
+2d_physics/layer_11="Bullets"
+2d_physics/layer_16="Climbing"
+2d_physics/layer_17="Throwing"
 
 [rendering]
 

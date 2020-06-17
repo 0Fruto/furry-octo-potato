@@ -115,7 +115,7 @@ func ProcessAnimation():
 					ColToIdle()
 					landing = false
 					firstAnimL = false
-			elif !landing and !Input.is_action_pressed("ui_right") && !Input.is_action_pressed("ui_left"):
+			elif !landing and (velocity.x == 0) or (!Input.is_action_pressed("ui_left") and !Input.is_action_pressed("ui_right")) or Input.is_action_pressed("ui_left") and Input.is_action_pressed("ui_right"):
 				$Sprite.play("Idle")
 				ColToIdle()
 		
@@ -296,8 +296,8 @@ func Die():
 
 func CheckHighDeath():
 	if $Left.is_colliding() or $Right.is_colliding():
-		if velocity.y >= 500:
-			Damage(velocity.y)
+		if velocity.y >= 800:
+			Damage(velocity.y / 20)
 			if health <= 0:
 				highDeath = true
 
@@ -329,7 +329,7 @@ func Climbing():
 				climbingUp = false
 				climbing = false
 			if climbingUp:
-				$Sprite.offset = Vector2(16, -1)
+				$Sprite.offset = Vector2(16, -3)
 			if Input.is_action_just_pressed("ui_down"):
 				climbing = false
 				velocity.x = -500 * $Sprite.scale.x

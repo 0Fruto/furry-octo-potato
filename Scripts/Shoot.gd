@@ -11,7 +11,7 @@ func _ready():
 	loadWall = preload("res://Prefabs/Wall.tscn")
 
 func _process(_delta):
-	if !$Player.casting && !$Player.tossingHat:
+	if !$Player.casting && !$Player.tossingHat && !$Player.climbing:
 		if Input.is_action_pressed("wall"):
 			$Player.aiming = true
 			Global.castMode = "wall"
