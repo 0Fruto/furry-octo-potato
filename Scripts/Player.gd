@@ -188,11 +188,11 @@ func GetInput():
 				$"Upper ray".cast_to.x = 30 * $Sprite.scale.x
 				$"Short ray".cast_to.x = 30 * $Sprite.scale.x
 				if moveDirection == 1:
-					$Right.position.x = 12
-					$Left.position.x = -5
-				elif moveDirection == -1:
 					$Right.position.x = 5
-					$Left.position.x = -12
+					$Left.position.x = -6
+				elif moveDirection == -1:
+					$Right.position.x = 6
+					$Left.position.x = -5
 
 func kickback(force):
 	if !fly:
