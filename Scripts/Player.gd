@@ -75,6 +75,7 @@ func _process(delta):
 		ManaProcess(delta)
 		$"MainCamera/Mana".value = manaDisplay
 		$"MainCamera/Health".value = health
+		CollapseProcces()
 
 func _physics_process(delta):
 	Climbing()
@@ -116,8 +117,9 @@ func ProcessAnimation():
 					landing = false
 					firstAnimL = false
 			elif !landing and (velocity.x == 0) or (!Input.is_action_pressed("ui_left") and !Input.is_action_pressed("ui_right")) or Input.is_action_pressed("ui_left") and Input.is_action_pressed("ui_right"):
-				$Sprite.play("Idle")
-				ColToIdle()
+				if !IsOnEdge():
+					$Sprite.play("Idle")
+					ColToIdle()
 		
 		elif !is_on_floor() and !climbing:
 			if !Input.is_action_pressed("ui_left") and !Input.is_action_pressed("ui_right"):
@@ -164,7 +166,7 @@ func GetInput():
 				if mana > 1:
 					fly = true
 					if fly:
-						mana -= 1
+						mana -= 0.5
 				else:
 					fly = false
 			elif !Input.is_action_pressed("fly"):
@@ -186,11 +188,11 @@ func GetInput():
 				$"Upper ray".cast_to.x = 30 * $Sprite.scale.x
 				$"Short ray".cast_to.x = 30 * $Sprite.scale.x
 				if moveDirection == 1:
-					$Right.position.x = 12
-					$Left.position.x = -3
+					$Right.position.x = 15
+					$Left.position.x = -5
 				elif moveDirection == -1:
-					$Right.position.x = 3
-					$Left.position.x = -12
+					$Right.position.x = 5
+					$Left.position.x = -15
 
 func kickback(force):
 	if !fly:
@@ -339,3 +341,18 @@ func Climbing():
 			$Sprite.offset = Vector2(0, 0)
 	if dontClimb > 0:
 		dontClimb -= 1
+
+func CollapseProcces():
+	if IsOnEdge():
+		if !Input.is_action_pressed("ui_left") and !Input.is_action_pressed("ui_right"):
+			$Sprite.play("Collapse")
+			if $Left.is_colliding():
+				$Sprite.scale.x = 1
+			elif $Right.is_colliding():
+				$Sprite.scale.x = -1
+
+func IsOnEdge():
+	if ($Left.is_colliding() and !$Right.is_colliding()) or (!$Left.is_colliding() and $Right.is_colliding()):
+		return true
+	else:
+		return false

@@ -1,4 +1,4 @@
-[gd_scene load_steps=123 format=2]
+[gd_scene load_steps=129 format=2]
 
 [ext_resource path="res://Sprites/Model textures/model-jumping-while-running-Sheet.png" type="Texture" id=1]
 [ext_resource path="res://Scripts/Player.gd" type="Script" id=2]
@@ -22,6 +22,7 @@
 [ext_resource path="res://Sprites/Ui/ProgressBar/BackGround.png" type="Texture" id=20]
 [ext_resource path="res://Sprites/Model textures/model-latch-onto-cliff-Sheet.png" type="Texture" id=21]
 [ext_resource path="res://Sprites/Model textures/model-climbing-up-the-cliff-Sheet.png" type="Texture" id=22]
+[ext_resource path="res://Sprites/Model textures/model-flailing-Sheet.png" type="Texture" id=23]
 
 [sub_resource type="CanvasItemMaterial" id=90]
 light_mode = 1
@@ -84,6 +85,26 @@ region = Rect2( 384, 0, 64, 64 )
 [sub_resource type="AtlasTexture" id=89]
 atlas = ExtResource( 16 )
 region = Rect2( 448, 0, 64, 64 )
+
+[sub_resource type="AtlasTexture" id=101]
+atlas = ExtResource( 23 )
+region = Rect2( 320, 0, 64, 64 )
+
+[sub_resource type="AtlasTexture" id=102]
+atlas = ExtResource( 23 )
+region = Rect2( 384, 0, 64, 64 )
+
+[sub_resource type="AtlasTexture" id=103]
+atlas = ExtResource( 23 )
+region = Rect2( 448, 0, 64, 64 )
+
+[sub_resource type="AtlasTexture" id=104]
+atlas = ExtResource( 23 )
+region = Rect2( 512, 0, 64, 64 )
+
+[sub_resource type="AtlasTexture" id=105]
+atlas = ExtResource( 23 )
+region = Rect2( 576, 0, 64, 64 )
 
 [sub_resource type="AtlasTexture" id=10]
 atlas = ExtResource( 3 )
@@ -403,6 +424,11 @@ animations = [ {
 "loop": true,
 "name": "Walking",
 "speed": 5.0
+}, {
+"frames": [ SubResource( 101 ), SubResource( 102 ), SubResource( 103 ), SubResource( 104 ), SubResource( 105 ) ],
+"loop": true,
+"name": "Collapse",
+"speed": 10.0
 }, {
 "frames": [ SubResource( 10 ), SubResource( 11 ), SubResource( 12 ), SubResource( 13 ), SubResource( 14 ), SubResource( 15 ), SubResource( 16 ), SubResource( 17 ) ],
 "loop": true,
@@ -781,16 +807,16 @@ cast_to = Vector2( 30, 0 )
 collision_mask = 32768
 
 [node name="Left" type="RayCast2D" parent="."]
-position = Vector2( -3, 31.6778 )
+position = Vector2( -5, 31.6778 )
 enabled = true
 cast_to = Vector2( 0, 20 )
-collision_mask = 1037
+collision_mask = 1024
 
 [node name="Right" type="RayCast2D" parent="."]
-position = Vector2( 12, 31.6778 )
+position = Vector2( 15, 31.6778 )
 enabled = true
 cast_to = Vector2( 0, 20 )
-collision_mask = 1037
+collision_mask = 1024
 
 [node name="Upper ray" type="RayCast2D" parent="."]
 position = Vector2( 16, -3.64215 )
@@ -801,7 +827,7 @@ collision_mask = 32768
 [node name="Sprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 78 )
 animation = "Idle"
-frame = 2
+frame = 5
 playing = true
 
 [node name="Collider" type="CollisionShape2D" parent="."]
@@ -840,7 +866,7 @@ default_color = Color( 0.4, 0.501961, 1, 1 )
 gradient = SubResource( 81 )
 
 [node name="Light2D" type="Light2D" parent="."]
-position = Vector2( 1, 15.3578 )
+position = Vector2( 1, 15.6778 )
 texture = ExtResource( 9 )
 texture_scale = 5.76
 range_layer_min = -1
