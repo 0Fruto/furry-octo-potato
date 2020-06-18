@@ -188,11 +188,11 @@ func GetInput():
 				$"Upper ray".cast_to.x = 30 * $Sprite.scale.x
 				$"Short ray".cast_to.x = 30 * $Sprite.scale.x
 				if moveDirection == 1:
-					$Right.position.x = 15
+					$Right.position.x = 12
 					$Left.position.x = -5
 				elif moveDirection == -1:
 					$Right.position.x = 5
-					$Left.position.x = -15
+					$Left.position.x = -12
 
 func kickback(force):
 	if !fly:
@@ -344,12 +344,22 @@ func Climbing():
 
 func CollapseProcces():
 	if IsOnEdge():
+		if $Left.is_colliding() and Input.is_action_pressed("ui_right"):
+			walkSpeed = 0
+		if $Right.is_colliding() and Input.is_action_pressed("ui_left"):
+			walkSpeed = 0
 		if !Input.is_action_pressed("ui_left") and !Input.is_action_pressed("ui_right"):
+			velocity.x = 0
 			$Sprite.play("Collapse")
+			climbing = true
 			if $Left.is_colliding():
 				$Sprite.scale.x = 1
 			elif $Right.is_colliding():
 				$Sprite.scale.x = -1
+	else:
+		if walkSpeed == 10:
+			yield(get_tree().create_timer(0.1), "timeout")
+			walkSpeed = 250
 
 func IsOnEdge():
 	if ($Left.is_colliding() and !$Right.is_colliding()) or (!$Left.is_colliding() and $Right.is_colliding()):
