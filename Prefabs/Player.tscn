@@ -813,7 +813,7 @@ cast_to = Vector2( 0, 20 )
 collision_mask = 1024
 
 [node name="Right" type="RayCast2D" parent="."]
-position = Vector2( 5, 31.6778 )
+position = Vector2( 9, 31.6778 )
 enabled = true
 cast_to = Vector2( 0, 20 )
 collision_mask = 1024
@@ -824,9 +824,15 @@ enabled = true
 cast_to = Vector2( 30, 0 )
 collision_mask = 32768
 
+[node name="Cross" type="RayCast2D" parent="."]
+position = Vector2( 10, 34.6778 )
+enabled = true
+cast_to = Vector2( -20, 0 )
+
 [node name="Sprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 78 )
 animation = "Idle"
+frame = 5
 playing = true
 
 [node name="Collider" type="CollisionShape2D" parent="."]
