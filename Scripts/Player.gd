@@ -1,15 +1,15 @@
 extends KinematicBody2D
 
-export var health = 100
-export var mana = 100
-var manaDisplay = 100
+export var health = 100 #main healt variable
+export var mana = 100 #main mana variable
+var manaDisplay = 100 #mana variable that displays on the screen
 
 export var sideJumpAcceleration = 650
 export var slopeStop = 64
 export var gravity = 1000.0
-export var walkSpeed = 250
-export var jumpVelocity = -350
-export var jumpTimerGoal = 2
+export var walkSpeed = 250 #general player speed
+export var jumpVelocity = -350 #force with that player jumps
+export var jumpTimerGoal = 2 #the time after 'Space' button pressed
 var jumpTimer = 0
 
 var velocity = Vector2()
@@ -26,6 +26,8 @@ var aiming = true
 var climbing = false
 var climbingUp = false
 var dontClimb = 10
+
+var moveDirection = 1
 
 var fly = false
 var flyTimer = 100
@@ -48,7 +50,7 @@ func _ready():
 	ColToIdle()
 	#Engine.time_scale = 0.5
 	jumpTimer = jumpTimerGoal
-	$"../Light2D/AnimationPlayer".current_animation = "Light"
+	$"../Fireplace/AnimationPlayer".current_animation = "Light"
 	loadFakeBottle = preload("res://Prefabs/FakeBottle.tscn")
 
 func _process(delta):
@@ -174,28 +176,31 @@ func GetInput():
 			#if Input.is_action_just_pressed("ui_down") && is_on_floor():
 				#position += Vector2(0, 1)
 				#velocity.y = 1000
-			var moveDirection = -int(Input.is_action_pressed("ui_left")) + int(Input.is_action_pressed("ui_right"))
+			moveDirection = -int(Input.is_action_pressed("ui_left")) + int(Input.is_action_pressed("ui_right"))
 			if !fly:
 				velocity.x = lerp(velocity.x, walkSpeed * moveDirection, GetHWeight())
 			else:
 				velocity.x = lerp(velocity.x, walkSpeed * moveDirection * 3, GetHWeight())
 				velocity.y = lerp(velocity.y, walkSpeed * (-int(Input.is_action_pressed("ui_up")) + int(Input.is_action_pressed("ui_down"))) * 3, GetHWeight())
 			if moveDirection != 0:
-				$ColliderRun.scale.x = moveDirection
-				$Collider.position.x = 5 * moveDirection
-				$Sprite.scale.x = moveDirection
-				$"Upper ray".position.x = 16 * $Sprite.scale.x
-				$"Upper ray".cast_to.x = 30 * $Sprite.scale.x
-				$"Short ray".cast_to.x = 30 * $Sprite.scale.x
-				$Cross.cast_to.x = -20 * $Sprite.scale.x
-				if moveDirection == 1:
-					$Cross.position.x = 10
-					$Right.position.x = 9
-					$Left.position.x = -6
-				elif moveDirection == -1:
-					$Cross.position.x = -10
-					$Right.position.x = 6
-					$Left.position.x = -9
+				DirectionProcess(moveDirection)
+
+func DirectionProcess(direction):
+	$ColliderRun.scale.x = direction
+	$Collider.position.x = 5 * direction
+	$Sprite.scale.x = direction
+	$"Upper ray".position.x = 16 * $Sprite.scale.x
+	$"Upper ray".cast_to.x = 30 * $Sprite.scale.x
+	$"Short ray".cast_to.x = 30 * $Sprite.scale.x
+	$Cross.cast_to.x = -25 * $Sprite.scale.x
+	if direction == 1:
+		$Cross.position.x = 17
+		$Right.position.x = 16
+		$Left.position.x = -6
+	elif direction == -1:
+		$Cross.position.x = -17
+		$Right.position.x = 6
+		$Left.position.x = -16
 
 func kickback(force):
 	if !fly:
@@ -297,6 +302,7 @@ func Die():
 	else:
 		$Sprite.play("Death")
 	yield($Sprite, "animation_finished")
+	yield(get_tree().create_timer(1),"timeout")
 	$MainCamera/Death.Pause()
 
 func CheckHighDeath():
@@ -307,7 +313,7 @@ func CheckHighDeath():
 				highDeath = true
 
 func BottleAim():
-	if fakeBottleCounter > 10:
+	if fakeBottleCounter > 10 and !climbing:
 		if aiming and Global.castMode == "hurl":
 			var fakeBottle = loadFakeBottle.instance()
 			add_child(fakeBottle)
@@ -330,7 +336,7 @@ func Climbing():
 				climbingUp = true
 				$Sprite.play("ClimbingUp")
 				yield($Sprite, "animation_finished")
-				global_position += Vector2(20 * $Sprite.scale.x, -40)
+				global_position += Vector2(22 * $Sprite.scale.x, -35)
 				climbingUp = false
 				climbing = false
 			if climbingUp:
@@ -347,25 +353,19 @@ func Climbing():
 
 func CollapseProcces():
 	if IsOnEdge():
-		if $Cross.is_colliding():
-			if !Input.is_action_pressed("ui_left") and !Input.is_action_pressed("ui_right"):
-				global_position.x = $Cross.get_collision_point().x
-		#if $Left.is_colliding() and Input.is_action_pressed("ui_right"):
-			#walkSpeed = 0
-		#if $Right.is_colliding() and Input.is_action_pressed("ui_left"):
-			#walkSpeed = 0
+		if $Left.is_colliding() and !$Right.is_colliding():
+			moveDirection = 1
+			DirectionProcess(moveDirection)
+		elif !$Left.is_colliding() and $Right.is_colliding():
+			moveDirection = -1
+			DirectionProcess(moveDirection)
 		if !Input.is_action_pressed("ui_left") and !Input.is_action_pressed("ui_right"):
 			velocity.x = 0
 			$Sprite.play("Collapse")
 			climbing = true
-			if $Left.is_colliding():
-				$Sprite.scale.x = 1
-			elif $Right.is_colliding():
-				$Sprite.scale.x = -1
-	else:
-		if walkSpeed == 10:
-			yield(get_tree().create_timer(0.1), "timeout")
-			walkSpeed = 250
+		if $Cross.is_colliding():
+			if !Input.is_action_pressed("ui_left") and !Input.is_action_pressed("ui_right"):
+				global_position.x = $Cross.get_collision_point().x
 
 func IsOnEdge():
 	if ($Left.is_colliding() and !$Right.is_colliding()) or (!$Left.is_colliding() and $Right.is_colliding()):

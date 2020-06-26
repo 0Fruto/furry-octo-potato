@@ -508,7 +508,7 @@ animations = [ {
 "frames": [ SubResource( 94 ), SubResource( 95 ), SubResource( 96 ), SubResource( 97 ), SubResource( 98 ), SubResource( 99 ), SubResource( 100 ) ],
 "loop": true,
 "name": "ClimbingUp",
-"speed": 5.0
+"speed": 10.0
 } ]
 
 [sub_resource type="RectangleShape2D" id=79]
@@ -533,7 +533,7 @@ __meta__ = {
 pause_mode = 2
 z_index = 100
 current = true
-smoothing_speed = 10.0
+smoothing_speed = 1.0
 
 [node name="Mana" type="TextureProgress" parent="MainCamera"]
 material = SubResource( 90 )
@@ -797,7 +797,6 @@ default_color = Color( 1, 0, 0, 1 )
 [node name="Middle ray" type="RayCast2D" parent="."]
 visible = false
 position = Vector2( 0, -0.322159 )
-enabled = true
 cast_to = Vector2( 70, 0 )
 
 [node name="Short ray" type="RayCast2D" parent="."]
@@ -813,7 +812,7 @@ cast_to = Vector2( 0, 20 )
 collision_mask = 1024
 
 [node name="Right" type="RayCast2D" parent="."]
-position = Vector2( 9, 31.6778 )
+position = Vector2( 16, 31.6778 )
 enabled = true
 cast_to = Vector2( 0, 20 )
 collision_mask = 1024
@@ -825,14 +824,15 @@ cast_to = Vector2( 30, 0 )
 collision_mask = 32768
 
 [node name="Cross" type="RayCast2D" parent="."]
-position = Vector2( 10, 34.6778 )
+position = Vector2( 17, 32.6778 )
 enabled = true
-cast_to = Vector2( -20, 0 )
+cast_to = Vector2( -25, 0 )
 
 [node name="Sprite" type="AnimatedSprite" parent="."]
+modulate = Color( 0.6, 0.686275, 0.701961, 1 )
 frames = SubResource( 78 )
 animation = "Idle"
-frame = 5
+frame = 7
 playing = true
 
 [node name="Collider" type="CollisionShape2D" parent="."]
@@ -840,7 +840,6 @@ position = Vector2( 5, 15 )
 shape = SubResource( 79 )
 
 [node name="ColliderRun" type="CollisionPolygon2D" parent="."]
-visible = false
 position = Vector2( 0, 0.3 )
 polygon = PoolVector2Array( -15, 31.6778, 12, 31.6778, 13, 26.6778, 10, 19.6778, 14, 10.6778, 19, -1.32216, 10, -1.32216, 8, 2.67784, -8, 8.67784, -15, 24.6778 )
 
@@ -871,10 +870,14 @@ default_color = Color( 0.4, 0.501961, 1, 1 )
 gradient = SubResource( 81 )
 
 [node name="Light2D" type="Light2D" parent="."]
-position = Vector2( 1, 15.6778 )
+position = Vector2( 0, 8.67784 )
 texture = ExtResource( 9 )
-texture_scale = 5.76
+texture_scale = 8.69
+color = Color( 0.803922, 0.607843, 0.235294, 1 )
+energy = 1.56
+range_height = 29.1
 range_layer_min = -1
+shadow_enabled = true
 
 [node name="Rock" type="Sprite" parent="."]
 visible = false
