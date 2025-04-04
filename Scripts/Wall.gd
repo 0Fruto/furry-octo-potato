@@ -7,11 +7,12 @@ var posX = 100
 var posStart
 
 func _ready():
+	pause_mode = Node.PAUSE_MODE_STOP
 	$Wall.play("Building")
 	rotation = deg2rad($"/root/Game/Cursor".wallRotation)
 	posStart = $"/root/Game/Cursor/Wall".global_position
 	position = posStart
-	yield(get_tree().create_timer(9),"timeout")
+	yield(get_tree().create_timer(9, false),"timeout")
 	DestroyWall()
 	if rotation > 0:
 		posX *= -1
